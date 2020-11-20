@@ -55,8 +55,6 @@ public final class DataManager {
         prod1.addAssociatedPart(ih1);
         prod1.addAssociatedPart(os2);
         prod1.addAssociatedPart(os2);
-        prod1.addAssociatedPart(os2);
-        prod1.addAssociatedPart(os2);
         
         Inventory.addProduct(prod1);
         Inventory.addProduct(prod2);
