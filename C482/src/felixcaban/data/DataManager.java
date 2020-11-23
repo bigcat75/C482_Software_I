@@ -3,6 +3,7 @@ package felixcaban.data;
 import felixcaban.models.InHouse;
 import felixcaban.models.Inventory;
 import felixcaban.models.Outsourced;
+import felixcaban.models.Part;
 import felixcaban.models.Product;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,15 +13,18 @@ import java.util.List;
  *
  * @author felix.caban
  */
-public final class DataManager {
+public final class DataManager 
+{
     
     private static int partId;
     private static int productId;
     
-    private static int selectedPartId;
-    private static int selectedProductId;
+    private static Part partToModify;
+    private static int partIndexToModify;
+    private static Product productToModify;
+    private static int productIndexToModify;
     
-    public static void LoadData()
+    public static void LoadDataOnStart()
     {
         
         var ih1 = new InHouse(1, "Case", 79.00, 7, 5, 10, 59);
@@ -66,7 +70,7 @@ public final class DataManager {
             partIdList.add(p.getId());
          });
         
-        partId = Collections.max(partIdList);
+        partId = Collections.max(partIdList) + 1;
         
         List<Integer> productIdList = new ArrayList<>();
 
@@ -75,14 +79,27 @@ public final class DataManager {
             productIdList.add(p.getId());
         });
 
-        int productId = Collections.max(productIdList);
+        productId = Collections.max(productIdList) + 1;
          
+    }
+
+    public static void incrementPartId()
+    {
+        
+        partId++;
+        
+    }
+
+    public static void incrementProductId()
+    {
+        
+        productId++;
+        
     }
 
     public static int getNextPartId()
     {
         
-        partId++;       
         return partId;
         
     }
@@ -90,28 +107,97 @@ public final class DataManager {
     public static int getNextProductId()
     {
         
-        productId++;
         return productId;
         
     }
     
-    public static void selectedPartId(int id)
+    public static void setPartToModify(int index, Part part)
     {
-        selectedPartId = id;
+        
+        partToModify = part;
+        partIndexToModify = index;
+        
     }
     
-    public static void selectedProductId(int id)
+    public static void setProductToModify(int index, Product product)
     {
-        selectedProductId = id;
+        
+        productToModify = product;
+        productIndexToModify = index;
+        
     }
     
-    public static int getPartId()
+    public static Part getPartToModify()
     {
-        return selectedPartId;
+        
+        return partToModify;
+        
     }
     
-    public static int getProductId()
+    public static int getPartIndexToModify()
     {
-        return selectedProductId;
+        
+        return partIndexToModify;
+        
     }
+    
+    public static Product getProductToModify()
+    {
+        
+        return productToModify;
+        
+    }
+    
+    public static int getProductIndexToModify()
+    {
+        
+        return productIndexToModify;
+        
+    }
+    
+    public static boolean isInteger(String input)
+    {
+        
+        try
+        {
+            Integer.parseInt(input); 
+            return true;
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+        
+    }
+    
+    public static boolean isDouble(String input)
+    {
+        
+        try
+        {
+            Double.parseDouble(input); 
+            return true;
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+        
+    }
+    
+    public static boolean minMaxTest(int max, int min)
+    {
+
+        if (max > min)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
+        
+    }
+    
+    
 }

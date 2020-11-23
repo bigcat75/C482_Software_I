@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -100,69 +100,7 @@ public class MainFormController implements Initializable
         colProductInventoryLevel.setCellValueFactory(new PropertyValueFactory<>("stock"));
         colProductCost.setCellValueFactory(new PropertyValueFactory<>("price"));
         productTable.setItems(Inventory.getAllProducts()); 
-        
-        
-        FilteredList<Part> filteredParts = new FilteredList<>(Inventory.getAllParts(), b -> true);
-        
-        txtPartSearch.textProperty().addListener((observable, oldValue, newValue) -> 
-        {
-            filteredParts.setPredicate(p -> 
-            {
-                if(newValue == null || newValue.isEmpty())
-                {
-                    return true;
-                }
                 
-                String lowerCaseFilter = newValue.toLowerCase();
-                
-                if (p.getName().toLowerCase().indexOf(lowerCaseFilter) != -1)
-                {
-                    return true;
-                }
-                else if (String.valueOf(p.getId()).indexOf(newValue) != -1)
-                {
-                    return true;
-                }
-                else return false;
-            });
-            
-        });
-        
-        SortedList<Part> sortedParts = new SortedList<> (filteredParts);
-        sortedParts.comparatorProperty().bind(partTable.comparatorProperty());
-        partTable.setItems(sortedParts);
-        
-        
-        FilteredList<Product> filteredProducts = new FilteredList<>(Inventory.getAllProducts(), b -> true);
-        
-        txtProductSearch.textProperty().addListener((observable, oldValue, newValue) -> 
-        {
-            filteredProducts.setPredicate(p -> 
-            {
-                if(newValue == null || newValue.isEmpty())
-                {
-                    return true;
-                }
-                
-                String lowerCaseFilter = newValue.toLowerCase();
-                
-                if (p.getName().toLowerCase().indexOf(lowerCaseFilter) != -1)
-                {
-                    return true;
-                }
-                else if (String.valueOf(p.getId()).indexOf(newValue) != -1)
-                {
-                    return true;
-                }
-                else return false;
-            });
-            
-        });
-        
-        SortedList<Product> sortedProducts = new SortedList<> (filteredProducts);
-        sortedProducts.comparatorProperty().bind(productTable.comparatorProperty());
-        productTable.setItems(sortedProducts);
-        
     }    
 
     @FXML
@@ -174,12 +112,12 @@ public class MainFormController implements Initializable
     }
 
     @FXML
-    private void handleBtnPartAddAction(ActionEvent event) throws IOException 
+    private void handleBtnPartAddAction(ActionEvent event) throws IOException
     {
         
         Parent addPartForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/AddPartForm.fxml"));
         Scene addPartScene = new Scene(addPartForm);
-        
+        addPartScene.getStylesheets().add("/css/Listview.css");
         Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
         
         window.setScene(addPartScene);
@@ -191,46 +129,62 @@ public class MainFormController implements Initializable
     private void handleBtnPartModifyAction(ActionEvent event) throws IOException 
     {
         
-        try
+        if(partTable.getSelectionModel().getSelectedItem() == null)
+        {
+            
+            JOptionPane.showMessageDialog(null, "Please select a Part to modify.", "Selection Error", 0);
+            
+        }        
+        else
         {        
-            DataManager.selectedPartId(partTable.getSelectionModel().getSelectedItem().getId());
+            
+            DataManager.setPartToModify(partTable.getSelectionModel().getSelectedIndex(), partTable.getSelectionModel().getSelectedItem());
 
             Parent modPartForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/ModifyPartForm.fxml"));
             Scene modPartScene = new Scene(modPartForm);
-
+            modPartScene.getStylesheets().add("/css/Listview.css");
             Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();   
 
             window.setScene(modPartScene);
             window.show();  
+            
         } 
-        catch (Exception e)
-        {
-            JOptionPane.showMessageDialog(null, "Please select an item to modify", "Selection Error", 0);
-        };
         
     }
 
     @FXML
-    private void handleBtnPartDeleteAction(ActionEvent event)throws IOException 
+    private void handleBtnPartDeleteAction(ActionEvent event)
     {
-        
-        int result = JOptionPane.showConfirmDialog(null, "Do you really want to delete this record?", "Confim Delete", JOptionPane.YES_NO_OPTION);
-        
-        if(result ==0)
-        {        
-            var selectedPart = partTable.getSelectionModel().getSelectedItem();
-            Inventory.deletePart(selectedPart);
+        if(partTable.getSelectionModel().getSelectedItem() == null)
+        {
+            
+            JOptionPane.showMessageDialog(null, "Please select a Part to delete.", "Selection Error", 0);
+            
+        }        
+        else
+        {
+            
+            int result = JOptionPane.showConfirmDialog(null, "Do you really want to delete this Part?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+
+            if(result ==0)
+            {        
+                
+                var selectedPart = partTable.getSelectionModel().getSelectedItem();
+                Inventory.deletePart(selectedPart);
+                
+            }
+            
         }
         
     }
     
     @FXML
-    private void handleBtnProductAddAction(ActionEvent event) throws IOException 
+    private void handleBtnProductAddAction(ActionEvent event) throws IOException
     {
         
         Parent addProductForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/AddProductForm.fxml"));
         Scene addProductScene = new Scene(addProductForm);
-        
+        addProductScene.getStylesheets().add("/css/Listview.css");
         Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
         
         window.setScene(addProductScene);
@@ -239,50 +193,128 @@ public class MainFormController implements Initializable
     }
 
     @FXML
-    private void handleBtnProductModifyAction(ActionEvent event)throws IOException 
+    private void handleBtnProductModifyAction(ActionEvent event) throws IOException
     {
-    
-        try
+        
+        if(productTable.getSelectionModel().getSelectedItem() == null)
+        {
+            
+            JOptionPane.showMessageDialog(null, "Please select a Product to modify", "Selection Error", 0);
+            
+        }    
+        else
         { 
-            DataManager.selectedProductId(productTable.getSelectionModel().getSelectedItem().getId());
+            
+            DataManager.setProductToModify(productTable.getSelectionModel().getSelectedIndex(), productTable.getSelectionModel().getSelectedItem());
 
             Parent modProductForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/ModifyProductForm.fxml"));
             Scene modProductScene = new Scene(modProductForm);
-
+            modProductScene.getStylesheets().add("/css/Listview.css");
             Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
 
             window.setScene(modProductScene);
             window.show(); 
+            
         }
-        catch (Exception e)
-        {
-            JOptionPane.showMessageDialog(null, "Please select an item to modify", "Selection Error", 0);
-        };
                 
     }
     
     @FXML
-    private void handleBtnProductDeleteAction(ActionEvent event)throws IOException 
+    private void handleBtnProductDeleteAction(ActionEvent event)
     {
-        int result = JOptionPane.showConfirmDialog(null, "Do you really want to delete this record?", "Confim Delete", JOptionPane.YES_NO_OPTION);
         
-        if(result ==0)
+        if(productTable.getSelectionModel().getSelectedItem() == null)
         {
-            var selectedProduct = productTable.getSelectionModel().getSelectedItem();
-            Inventory.deleteProduct(selectedProduct);
-        }  
+            
+            JOptionPane.showMessageDialog(null, "Please select a Product to delete.", "Selection Error", 0);
+            
+        }
+        else if (productTable.getSelectionModel().getSelectedItem().getAllAssociatedParts().isEmpty())
+        {
+            int result = JOptionPane.showConfirmDialog(null, "Do you really want to delete this Product?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+            
+            if(result ==0)
+            {
+
+                var selectedProduct = productTable.getSelectionModel().getSelectedItem();
+                Inventory.deleteProduct(selectedProduct);
+
+            }  
+        }
+        else        
+        {
+            JOptionPane.showMessageDialog(null, "You can not delete a Product that contains Parts.", "Selection Error", 0);
+        }
         
     }
 
     @FXML
     private void handlePartSearchAction(KeyEvent event) 
     {
+             
+        if(event.getCode() == KeyCode.ENTER) 
+        {
+            
+            if (txtPartSearch.getText() == null || txtPartSearch.getText().isEmpty())
+            {
+
+                partTable.setItems(Inventory.getAllParts());
+                partTable.getSelectionModel().clearSelection();
+                partTable.scrollTo(0);
+
+            }
+            else if (DataManager.isInteger(txtPartSearch.getText()))
+            {
+                
+                int partId = Integer.parseInt(txtPartSearch.getText());
+                Inventory.lookupPart(partId);
+                partTable.scrollTo(Inventory.lookupPart(partId));
+                partTable.getSelectionModel().select(Inventory.lookupPart(partId));
+
+            }
+            else
+            {      
+                
+                String partName = txtPartSearch.getText();
+                partTable.setItems(Inventory.lookupPart(partName));
+
+            }            
+        }        
         
     }
 
     @FXML
     private void handleProductSearchAction(KeyEvent event) 
     {
+                
+        if(event.getCode() == KeyCode.ENTER) 
+        {
+            
+            if (txtProductSearch.getText() == null || txtProductSearch.getText().isEmpty())
+            {
+
+                productTable.setItems(Inventory.getAllProducts());
+                productTable.getSelectionModel().clearSelection();
+                productTable.scrollTo(0);
+
+            }
+            else if (DataManager.isInteger(txtProductSearch.getText()))
+            {
+                
+                int partId = Integer.parseInt(txtProductSearch.getText());
+                Inventory.lookupPart(partId);
+                productTable.scrollTo(Inventory.lookupProduct(partId));
+                productTable.getSelectionModel().select(Inventory.lookupProduct(partId));
+
+            }
+            else
+            {   
+                
+                String productName = txtProductSearch.getText();
+                productTable.setItems(Inventory.lookupProduct(productName));
+
+            }            
+        }        
         
     }
       

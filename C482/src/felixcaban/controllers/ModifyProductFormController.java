@@ -9,8 +9,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,10 +17,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javax.swing.JOptionPane;
@@ -34,6 +35,7 @@ import javax.swing.JOptionPane;
  */
 public class ModifyProductFormController implements Initializable 
 {
+    
     @FXML
     private TextField txtId;
     @FXML
@@ -86,10 +88,10 @@ public class ModifyProductFormController implements Initializable
     @FXML
     private TableColumn<Part, Double> colPartCostB;
     
+    Product currentProduct = DataManager.getProductToModify();
     ObservableList<Part> includedParts = FXCollections.observableArrayList();
-    
-    Product currentProduct = null;
-    
+    @FXML
+    private ListView<String> lstErrorList;
 
     /**
      * Initializes the controller class.
@@ -105,55 +107,23 @@ public class ModifyProductFormController implements Initializable
         colPartNameA.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPartInventoryLevelA.setCellValueFactory(new PropertyValueFactory<>("stock"));
         colPartCostA.setCellValueFactory(new PropertyValueFactory<>("price"));
-        allPartsTable.setItems(Inventory.getAllParts());     
-        
-        FilteredList<Part> filteredParts = new FilteredList<>(Inventory.getAllParts(), b -> true);
-        
-        txtPartSearch.textProperty().addListener((observable, oldValue, newValue) -> 
-        {
-            filteredParts.setPredicate(p -> 
-            {
-                if(newValue == null || newValue.isEmpty())
-                {
-                    return true;
-                }
-                
-                String lowerCaseFilter = newValue.toLowerCase();
-                
-                if (p.getName().toLowerCase().indexOf(lowerCaseFilter) != -1)
-                {
-                    return true;
-                }
-                else if (String.valueOf(p.getId()).indexOf(newValue) != -1)
-                {
-                    return true;
-                }
-                else return false;
-            });
-            
-        });
-        
-        SortedList<Part> sortedParts = new SortedList<> (filteredParts);
-        sortedParts.comparatorProperty().bind(allPartsTable.comparatorProperty());
-        allPartsTable.setItems(sortedParts);
-        
-        for (Product p : Inventory.getAllProducts())
-        {
-            if(p.getId() == DataManager.getProductId())
-            {
-                currentProduct = p;
-            }
-        }
+        allPartsTable.setItems(Inventory.getAllParts());            
               
+        for(Part pa : currentProduct.getAllAssociatedParts())
+        {
+            
+            includedParts.add(pa);
+            
+        }
+                   
+        txtId.setDisable(true);        
         txtId.setText(String.valueOf(currentProduct.getId()));
         txtName.setText(currentProduct.getName());
         txtInv.setText(String.valueOf(currentProduct.getStock()));
         txtPriceCost.setText(String.valueOf(currentProduct.getPrice()));
+        txtMin.setText(String.valueOf(currentProduct.getMin()));  
         txtMax.setText(String.valueOf(currentProduct.getMax()));
-        txtMin.setText(String.valueOf(currentProduct.getMin()));   
-        includedParts = currentProduct.getAllAssociatedParts();
-        
-        txtId.setDisable(true);
+         
         
         colPartIdB.setCellValueFactory(new PropertyValueFactory<>("id"));
         colPartNameB.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -175,8 +145,24 @@ public class ModifyProductFormController implements Initializable
     private void handleBtnAddPartAction(ActionEvent event) 
     {
         
-        var selectedPart = allPartsTable.getSelectionModel().getSelectedItem();
-        includedParts.add(selectedPart);
+        if(allPartsTable.getSelectionModel().getSelectedItem() == null)
+        {
+            
+            JOptionPane.showMessageDialog(null, "Please select a Part to add.", "Selection Error", 0);
+            
+        }        
+        else
+        {    
+        
+            var selectedPart = allPartsTable.getSelectionModel().getSelectedItem();
+            includedParts.add(selectedPart);
+
+            allPartsTable.setItems(Inventory.getAllParts());
+            allPartsTable.getSelectionModel().clearSelection();
+            allPartsTable.scrollTo(0);
+            txtPartSearch.setText("");
+            
+        }
         
     }
 
@@ -185,35 +171,67 @@ public class ModifyProductFormController implements Initializable
     {
         
         try
-            { 
+        { 
+            
             int result = JOptionPane.showConfirmDialog(null, "Do you really want to delete this record?", "Confim Delete", JOptionPane.YES_NO_OPTION);
 
             if(result ==0)
             {  
-                var selectedProduct = includedPartsTable.getSelectionModel().getSelectedItem();
-                includedParts.remove(selectedProduct);
+                
+                var selectedPart = includedPartsTable.getSelectionModel().getSelectedItem();
+                includedParts.remove(selectedPart);
+                includedPartsTable.getSelectionModel().clearSelection();
+                includedPartsTable.scrollTo(0);
+                
             }
+            
+          
         }
         catch (Exception e)
         {
+            
             JOptionPane.showMessageDialog(null, "Please select an item to modify", "Selection Error", 0);
+            
         };
         
     }
 
     @FXML
     private void handleBtnSaveAction(ActionEvent event) throws IOException 
-    {
+    {       
         
-        // TODO Need to implement this method
-        
-        returnToMainForm(event);
+        try
+        {
+            lstErrorList.setItems(validateUserInput());
+            
+            var tempProduct = new Product(
+                    currentProduct.getId(),
+                    txtName.getText(),
+                    Double.parseDouble(txtPriceCost.getText()),
+                    Integer.parseInt(txtInv.getText()),
+                    Integer.parseInt(txtMin.getText()),
+                    Integer.parseInt(txtMax.getText())                
+            );        
+
+            for (Part pa : includedParts)
+            {
+                tempProduct.addAssociatedPart(pa);
+            }
+
+            Inventory.updateProduct(DataManager.getProductIndexToModify(), tempProduct);
+
+            returnToMainForm(event);
+        }
+        catch(Exception e)
+        {
+            
+        }
         
     }
     
-    @FXML
     private void returnToMainForm(ActionEvent event) throws IOException
     {
+        
         Parent mainForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/MainForm.fxml"));
         Scene mainFormScene = new Scene(mainForm);
         
@@ -221,6 +239,111 @@ public class ModifyProductFormController implements Initializable
         
         window.setScene(mainFormScene);
         window.show();  
+        
     }
+
+    @FXML
+    private void handlePartSearchAction(KeyEvent event) 
+    {
+        
+        if(event.getCode() == KeyCode.ENTER) 
+        {
+            
+            if (txtPartSearch.getText() == null || txtPartSearch.getText().isEmpty())
+            {
+
+                allPartsTable.setItems(Inventory.getAllParts());
+                allPartsTable.getSelectionModel().clearSelection();
+                allPartsTable.scrollTo(0);
+
+            }
+            else if (DataManager.isInteger(txtPartSearch.getText()))
+            {
+                
+                int partId = Integer.parseInt(txtPartSearch.getText());
+                Inventory.lookupPart(partId);
+                allPartsTable.scrollTo(Inventory.lookupPart(partId));
+                allPartsTable.getSelectionModel().select(Inventory.lookupPart(partId));
+
+            }
+            else
+            {      
+                
+                String partName = txtPartSearch.getText();
+                allPartsTable.setItems(Inventory.lookupPart(partName));
+
+            }            
+        }  
+        
+    }
+    
+    private ObservableList<String> validateUserInput()
+    {
+        
+        ObservableList<String> inputErrors = FXCollections.observableArrayList();      
+       
+       
+        if(txtName.getText() == null || txtName.getText().isEmpty())
+        {
+
+            inputErrors.add("Name is a required field.");
+
+        } 
+        
+        if(txtInv.getText() == null || txtInv.getText().isEmpty())
+        {
+
+            inputErrors.add("Inv is a required field.");
+
+        }
+        else if(!DataManager.isInteger(txtInv.getText()))
+        {
+
+            inputErrors.add("Inv must be an integer.");
+
+        }
+        
+        if(txtPriceCost.getText() == null || txtPriceCost.getText().isEmpty())
+        {
+
+            inputErrors.add("Price/Cost is a required field.");
+
+        }
+        else if(!DataManager.isDouble(txtPriceCost.getText()))
+        {
+
+            inputErrors.add("Price/Cost must be a decimal or integer.");
+
+        }
+
+        if(txtMax.getText() == null || txtMax.getText().isEmpty())
+        {
+
+            inputErrors.add("Max is a required field.");
+
+        }
+        else if(!DataManager.isInteger(txtMax.getText()))
+        {
+
+            inputErrors.add("Max must be an integer.");
+
+        }
+
+        if(txtMin.getText() == null || txtMin.getText().isEmpty())
+        {
+
+            inputErrors.add("Min is a required field.");
+
+        }
+        else if(!DataManager.isInteger(txtMin.getText()))
+        {
+
+            inputErrors.add("Min must be an integer.");
+
+        }
+        
+        return inputErrors;
+        
+    }    
     
 }

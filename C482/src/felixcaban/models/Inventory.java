@@ -5,9 +5,9 @@ import javafx.collections.ObservableList;
 
 public final class Inventory 
 {
-    private static final ObservableList<Part> allParts = FXCollections.observableArrayList();
-    private static final ObservableList<Product> allProducts = FXCollections.observableArrayList();
     
+    private static final ObservableList<Part> allParts = FXCollections.observableArrayList();
+    private static final ObservableList<Product> allProducts = FXCollections.observableArrayList();    
 
     public static void addPart(Part newPart)
     {
@@ -25,32 +25,83 @@ public final class Inventory
     
     public static Part lookupPart(int partId)
     { 
-       return null; 
+        
+       int index = 0;
+        
+       for (Part pa : allParts)
+       {
+           if (pa.getId() == partId)
+           {
+               index = allParts.indexOf(pa);
+           }
+       }
+       
+       return allParts.get(index);
        
     }
     
     public static Product lookupProduct(int productId)
     { 
-        return null;
+        
+       int index = 0;
+        
+       for (Product pr : allProducts)
+       {
+           if (pr.getId() == productId)
+           {
+               index = allProducts.indexOf(pr);
+           }
+       }
+       
+       return allProducts.get(index);
+        
     }
     
     public static ObservableList<Part> lookupPart(String partName)
     { 
-      return null;  
+        
+        ObservableList<Part> results = FXCollections.observableArrayList();
+        
+        for (Part pa : allParts)
+        {
+            if ( pa.getName().startsWith(partName))
+            {
+                results.add(pa);
+            }
+        }
+        
+        return results; 
+      
     }
     
     public static ObservableList<Product> lookupProduct(String productName)
     { 
-        return null;
+        
+        ObservableList<Product> results = FXCollections.observableArrayList();
+        
+        for (Product pr : allProducts)
+        {
+            if ( pr.getName().startsWith(productName))
+            {
+                results.add(pr);
+            }
+        }
+        
+        return results; 
+        
     }
     
     public static void updatePart(int index, Part newPart)
     {
         
+        allParts.set(index, newPart);
+        
     }
         
     public static void updateProduct(int index, Product newProduct)
     {
+        
+        allProducts.set(index, newProduct);
         
     }
     

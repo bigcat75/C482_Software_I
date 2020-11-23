@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 
 public class Product
 {    
+    
     private ObservableList<Part> associatedParts = FXCollections.observableArrayList();;
     private int id;
     private String name;
