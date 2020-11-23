@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -117,7 +115,7 @@ public class MainFormController implements Initializable
         
         Parent addPartForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/AddPartForm.fxml"));
         Scene addPartScene = new Scene(addPartForm);
-        addPartScene.getStylesheets().add("/css/Listview.css");
+        addPartScene.getStylesheets().add("felixcaban/css/Listview.css");
         Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
         
         window.setScene(addPartScene);
@@ -142,7 +140,7 @@ public class MainFormController implements Initializable
 
             Parent modPartForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/ModifyPartForm.fxml"));
             Scene modPartScene = new Scene(modPartForm);
-            modPartScene.getStylesheets().add("/css/Listview.css");
+            modPartScene.getStylesheets().add("felixcaban/css/Listview.css");
             Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();   
 
             window.setScene(modPartScene);
@@ -184,7 +182,7 @@ public class MainFormController implements Initializable
         
         Parent addProductForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/AddProductForm.fxml"));
         Scene addProductScene = new Scene(addProductForm);
-        addProductScene.getStylesheets().add("/css/Listview.css");
+        addProductScene.getStylesheets().add("felixcaban/css/Listview.css");
         Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
         
         window.setScene(addProductScene);
@@ -209,7 +207,7 @@ public class MainFormController implements Initializable
 
             Parent modProductForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/ModifyProductForm.fxml"));
             Scene modProductScene = new Scene(modProductForm);
-            modProductScene.getStylesheets().add("/css/Listview.css");
+            modProductScene.getStylesheets().add("felixcaban/css/Listview.css");
             Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
 
             window.setScene(modProductScene);
