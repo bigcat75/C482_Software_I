@@ -17,23 +17,18 @@ public class C482 extends Application
     {        
         stage.setTitle("C482 - Felix Caban");
         Parent root = FXMLLoader.load(getClass().getResource("/felixcaban/views/MainForm.fxml"));
-        mainForm = new Scene(root);
-        
+        mainForm = new Scene(root);        
         stage.setScene(mainForm);
         stage.show();
     }
     
     public static void main(String[] args) 
     {     
-        DataManager.LoadData();
+        DataManager.LoadDataOnStart();
         launch(args);  
     }
     
-    // TODO Fix issue with Product associated parts being saved without hitting save
-    // TODO Finish feature to save modified Parts and Products
-    // TODO Fix the search feature so that it executes on "Enter" and not use a listener
     // TODO Implement JavaDocs for all files
-    
-    
+    // TODO Implement min/max check
     
 }
