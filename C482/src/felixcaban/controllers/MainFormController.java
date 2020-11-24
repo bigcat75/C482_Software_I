@@ -26,6 +26,15 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 
+/**
+ * 
+ * FXML Controller class for MainForm.fxml
+ *
+ * @author felix.caban
+ * @version 1.0
+ * @since 1.0
+ * 
+ */
 public class MainFormController implements Initializable 
 {    
     Part selectedPart;
@@ -265,9 +274,23 @@ public class MainFormController implements Initializable
             {
                 
                 int partId = Integer.parseInt(txtPartSearch.getText());
-                Inventory.lookupPart(partId);
-                partTable.scrollTo(Inventory.lookupPart(partId));
-                partTable.getSelectionModel().select(Inventory.lookupPart(partId));
+                
+                if (!DataManager.partExists(partId))
+                {
+                    
+                    partTable.setItems(Inventory.getAllParts());
+                    partTable.getSelectionModel().clearSelection();
+                    partTable.scrollTo(0);
+                    JOptionPane.showMessageDialog(null, "The Part your entered does not exist.", "Search Error", 0);
+                    
+                }
+                else
+                {
+                    
+                    partTable.scrollTo(Inventory.lookupPart(partId));
+                    partTable.getSelectionModel().select(Inventory.lookupPart(partId));
+                    
+                }
 
             }
             else
@@ -299,11 +322,25 @@ public class MainFormController implements Initializable
             else if (DataManager.isInteger(txtProductSearch.getText()))
             {
                 
-                int partId = Integer.parseInt(txtProductSearch.getText());
-                Inventory.lookupPart(partId);
-                productTable.scrollTo(Inventory.lookupProduct(partId));
-                productTable.getSelectionModel().select(Inventory.lookupProduct(partId));
-
+                int productId = Integer.parseInt(txtProductSearch.getText());
+                
+                if (!DataManager.productExists(productId))
+                {
+                    
+                    productTable.setItems(Inventory.getAllProducts());
+                    productTable.getSelectionModel().clearSelection();
+                    productTable.scrollTo(0);
+                    JOptionPane.showMessageDialog(null, "The Product your entered does not exist.", "Search Error", 0);
+                    
+                }
+                else
+                {
+                    
+                    productTable.scrollTo(Inventory.lookupProduct(productId));
+                    productTable.getSelectionModel().select(Inventory.lookupProduct(productId));
+                    
+                }
+                   
             }
             else
             {   

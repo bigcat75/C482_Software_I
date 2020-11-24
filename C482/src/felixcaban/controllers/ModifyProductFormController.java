@@ -29,9 +29,13 @@ import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 
 /**
- * FXML Controller class
+ * 
+ * FXML Controller class for ModifyProductForm.fxml
  *
  * @author felix.caban
+ * @version 1.0
+ * @since 1.0
+ * 
  */
 public class ModifyProductFormController implements Initializable 
 {
@@ -95,6 +99,8 @@ public class ModifyProductFormController implements Initializable
 
     /**
      * Initializes the controller class.
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) 
@@ -169,30 +175,27 @@ public class ModifyProductFormController implements Initializable
     @FXML
     private void handleBtnRemovePartAction(ActionEvent event) 
     {
-        
-        try
-        { 
-            
-            int result = JOptionPane.showConfirmDialog(null, "Do you really want to delete this record?", "Confim Delete", JOptionPane.YES_NO_OPTION);
+               
+        if(includedPartsTable.getSelectionModel().getSelectedItem() == null)
+        {
+
+            JOptionPane.showMessageDialog(null, "Please select an Part to remove.", "Selection Error", 0);
+
+        }   
+        else
+        {
+            int result = JOptionPane.showConfirmDialog(null, "Do you really want to remove this part?", "Confim Removal", JOptionPane.YES_NO_OPTION);
 
             if(result ==0)
             {  
-                
+
                 var selectedPart = includedPartsTable.getSelectionModel().getSelectedItem();
                 includedParts.remove(selectedPart);
                 includedPartsTable.getSelectionModel().clearSelection();
                 includedPartsTable.scrollTo(0);
-                
+
             }
-            
-          
-        }
-        catch (Exception e)
-        {
-            
-            JOptionPane.showMessageDialog(null, "Please select an item to modify", "Selection Error", 0);
-            
-        };
+        }            
         
     }
 
@@ -202,7 +205,6 @@ public class ModifyProductFormController implements Initializable
         
         try
         {
-            lstErrorList.setItems(validateUserInput());
             
             var tempProduct = new Product(
                     currentProduct.getId(),
@@ -224,7 +226,7 @@ public class ModifyProductFormController implements Initializable
         }
         catch(Exception e)
         {
-            
+            lstErrorList.setItems(validateUserInput());
         }
         
     }

@@ -11,19 +11,66 @@ import java.util.List;
 
 /**
  *
+ * Responsible for providing the initial data when the application launches, as
+ * well as providing additional static members for testing and maintaining data
+ * integrity throughout the application life cycle.
+ * 
  * @author felix.caban
+ * @version 1.0
+ * @since 1.0
+ * 
  */
 public final class DataManager 
 {
-    
+    /**
+     * 
+     * The next available {@link felixcaban.models.Part#id PartId}.
+     * 
+     */
     private static int partId;
+    
+    /**
+     * 
+     * The next available {@link felixcaban.models.Product#id ProductId}.
+     * 
+     */
     private static int productId;
     
+    /**
+     * 
+     * The {@link felixcaban.models.Part Part} being modified.
+     * 
+     */
     private static Part partToModify;
+    
+     /**
+     * 
+     * The index of the {@link felixcaban.models.Part Part} being modified.
+     * 
+     */
     private static int partIndexToModify;
+    
+    /**
+     * 
+     * The {@link felixcaban.models.Product Product} being modified.
+     * 
+     */
     private static Product productToModify;
+    
+     /**
+     * 
+     * The index of the {@link felixcaban.models.Product Product} being modified.
+     * 
+     */
     private static int productIndexToModify;
     
+    /**
+     *
+     * Instantiates multiple {@link felixcaban.models.Part Part} and {@link felixcaban.models.Product Product}
+     * objects upon program start for testing the application. Also sets the seeds for auto-generating the
+     * {@link felixcaban.models.Part#id PartId} and {@link felixcaban.models.Product#id ProductId}.
+     * 
+     */
     public static void LoadDataOnStart()
     {
         
@@ -83,6 +130,12 @@ public final class DataManager
          
     }
 
+    /**
+     *
+     * Increments the part Id for the next {@link felixcaban.models.Part Part}
+     * that is created.
+     * 
+     */
     public static void incrementPartId()
     {
         
@@ -90,6 +143,12 @@ public final class DataManager
         
     }
 
+    /**
+     *
+     * Increments the product Id for the next {@link felixcaban.models.Product Product}
+     * that is created.
+     * 
+     */
     public static void incrementProductId()
     {
         
@@ -97,6 +156,14 @@ public final class DataManager
         
     }
 
+    /**
+     *
+     * Gets the next auto-generated {@link felixcaban.models.Part#id PartId}.
+     * 
+     * @return the auto-generated {@link felixcaban.models.Part#id PartId} for
+     * the next {@link felixcaban.models.Part Part} object instantiated.
+     * 
+     */
     public static int getNextPartId()
     {
         
@@ -104,6 +171,14 @@ public final class DataManager
         
     }
 
+    /**
+     *
+     * Gets the next auto-generated {@link felixcaban.models.Product#id ProductId}.
+     * 
+     * @return the auto-generated {@link felixcaban.models.Product#id ProductId} for
+     * the next {@link felixcaban.models.Product Product} object instantiated.
+     * 
+     */
     public static int getNextProductId()
     {
         
@@ -111,6 +186,14 @@ public final class DataManager
         
     }
     
+    /**
+     *
+     * Sets the {@link felixcaban.models.Part Part} that is currently being modified.
+     * 
+     * @param index the index of the {@link felixcaban.models.Part Part} that is currently being modified.
+     * @param part the {@link felixcaban.models.Part Part} that is currently being modified.
+     * 
+     */
     public static void setPartToModify(int index, Part part)
     {
         
@@ -119,6 +202,14 @@ public final class DataManager
         
     }
     
+    /**
+     *
+     * Sets the {@link felixcaban.models.Product Product} that is currently being modified.
+     * 
+     * @param index the index of the {@link felixcaban.models.Product Product} that is currently being modified.
+     * @param product the {@link felixcaban.models.Product Product} that is currently being modified.
+     * 
+     */
     public static void setProductToModify(int index, Product product)
     {
         
@@ -127,6 +218,12 @@ public final class DataManager
         
     }
     
+    /**
+     *
+     * Gets the {@link felixcaban.models.Part Part} that is currently being modified.
+     * 
+     * @return the {@link felixcaban.models.Part Part} that is currently being modified.
+     */
     public static Part getPartToModify()
     {
         
@@ -134,6 +231,12 @@ public final class DataManager
         
     }
     
+    /**
+     *
+     * Gets the index of the {@link felixcaban.models.Part Part} that is currently being modified.
+     * 
+     * @return the index of the {@link felixcaban.models.Part Part} that is currently being modified.
+     */
     public static int getPartIndexToModify()
     {
         
@@ -141,6 +244,13 @@ public final class DataManager
         
     }
     
+    /**
+     *
+     * Gets the {@link felixcaban.models.Product Product} that is currently being modified.
+     * 
+     * @return the {@link felixcaban.models.Product Product} that is currently being modified.
+     * 
+     */
     public static Product getProductToModify()
     {
         
@@ -148,6 +258,13 @@ public final class DataManager
         
     }
     
+    /**
+     *
+     * Gets the index of the {@link felixcaban.models.Product Product} that is currently being modified.
+     * 
+     * @return the index of the {@link felixcaban.models.Product Product} that is currently being modified.
+     * 
+     */
     public static int getProductIndexToModify()
     {
         
@@ -155,6 +272,13 @@ public final class DataManager
         
     }
     
+    /**
+     *
+     * Tests if a string is an integer.
+     * 
+     * @param input string to test.
+     * @return true if string is an integer, false if it is not.
+     */
     public static boolean isInteger(String input)
     {
         
@@ -170,6 +294,14 @@ public final class DataManager
         
     }
     
+    /**
+     *
+     * Tests if a string is an double.
+     * 
+     * @param input string to test.
+     * @return true if string is a double, false if it is not.
+     * 
+     */
     public static boolean isDouble(String input)
     {
         
@@ -185,19 +317,52 @@ public final class DataManager
         
     }
     
-    public static boolean minMaxTest(int max, int min)
+    /**
+     *
+     * Tests if a {@link felixcaban.models.Part Part} exists in inventory.
+     * 
+     * @param i the integer to test to determine if it is a valid {@link felixcaban.models.Part#id PartId}.
+     * @return true if integer is a valid {@link felixcaban.models.Part#id PartId}, false if it is not.
+     * 
+     */
+    public static boolean partExists(int i)
     {
-
-        if (max > min)
+        boolean test = false;
+        
+        for (Part p : Inventory.getAllParts())
         {
-            return true;
-        }
-        else 
-        {
-            return false;
+            if (p.getId() == i)
+            {
+                test = true;
+                break;
+            }
         }
         
+        return test;
     }
     
+     /**
+     *
+     * Tests if a {@link felixcaban.models.Product Product} exists in inventory.
+     * 
+     * @param i the integer to test to determine if it is a valid {@link felixcaban.models.Product#id ProductId}.
+     * @return true if integer is a valid {@link felixcaban.models.Product#id ProductId}, false if it is not.
+     * 
+     */
+    public static boolean productExists(int i)
+    {
+        boolean test = false;
+        
+        for (Product p : Inventory.getAllProducts())
+        {
+            if (p.getId() == i)
+            {
+                test = true;
+                break;
+            }
+        }
+        
+        return test;
+    }
     
 }

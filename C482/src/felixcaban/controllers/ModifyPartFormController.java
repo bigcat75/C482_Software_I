@@ -25,6 +25,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
+/**
+ * 
+ * FXML Controller class for ModifyPartForm.fxml
+ *
+ * @author felix.caban
+ * @version 1.0
+ * @since 1.0
+ * 
+ */
 public class ModifyPartFormController implements Initializable 
 {
     
@@ -62,7 +71,11 @@ public class ModifyPartFormController implements Initializable
     private ListView<String> lstErrorList;
 
     /**
+     * 
      * Initializes the controller class.
+     * @param url an optional URL that can be passed.
+     * @param rb an optional ResourceBundle that can be passed.
+     * 
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) 
@@ -104,6 +117,13 @@ public class ModifyPartFormController implements Initializable
         
     }    
 
+     /**
+     * 
+     * Handles the radio button for {@link felixcaban.models.InHouse InHouse} parts being modified in inventory.
+     * 
+     * @param event the event to handle.
+     * 
+     */
     @FXML
     private void handleRbInHouseAction(ActionEvent event) 
     {
@@ -113,6 +133,13 @@ public class ModifyPartFormController implements Initializable
         
     }
 
+    /**
+     * 
+     * Handles the radio button for {@link felixcaban.models.Outsourced Outsourced} parts being modified in inventory.
+     * 
+     * @param event the event to handle.
+     * 
+     */
     @FXML
     private void handleRbOutsourcedAction(ActionEvent event) 
     {
@@ -122,6 +149,13 @@ public class ModifyPartFormController implements Initializable
         
     }
     
+    /**
+     * 
+     * Handles the button to cancel modifying the {@link felixcaban.models.Part Part} in inventory.
+     * 
+     * @param event the event to handle.
+     * 
+     */
     @FXML
     private void handleBtnCancelAction(ActionEvent event) throws IOException
     {
@@ -130,15 +164,21 @@ public class ModifyPartFormController implements Initializable
         
     }
 
+    /**
+     * 
+     * Handles the button to save the selected {@link felixcaban.models.Part Part} being modified in inventory.
+     * 
+     * @param event the event to handle.
+     * 
+     */
     @FXML
-    private void handleBtnSaveAction(ActionEvent event) throws IOException 
+    private void handleBtnSaveAction(ActionEvent event)
     {
         
         Part tempPart;
         
         try
-        {
-            lstErrorList.setItems(validateUserInput());
+        {            
 
             if (rbInHouse.isSelected()) 
             {
@@ -177,11 +217,19 @@ public class ModifyPartFormController implements Initializable
         }
         catch(Exception e)
                 {
-
+                    lstErrorList.setItems(validateUserInput());
                 }
             
     }
     
+    /**
+     * 
+     * Method to return to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * 
+     * @param event the event to handle.
+     * @throws IOException 
+     * 
+     */
     private void returnToMainForm(ActionEvent event) throws IOException
     {
         
@@ -195,6 +243,13 @@ public class ModifyPartFormController implements Initializable
         
     }
     
+     /**
+     * 
+     * Returns a list of validation errors as a result of testing UI text box input.
+     * 
+     * @return a list of validation errors.
+     * 
+     */
     private ObservableList<String> validateUserInput()
     {
         

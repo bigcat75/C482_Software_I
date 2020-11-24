@@ -1,12 +1,12 @@
 package felixcaban.models;
 
 /**
- * Supplied class Part.java
- * 
- * This class is left as-is with no modifications, as specified in
- * the B:CLASS STRUCTURE rubric.
- *
- * @author Felix Caban
+* Supplied class Part.java 
+ */
+
+/**
+ *This class is unaltered in its entirety, per the instructions.
+ * @author Felix
  */
 public abstract class Part {
     private int id;
@@ -15,6 +15,16 @@ public abstract class Part {
     private int stock;
     private int min;
     private int max;    
+
+    /**
+     *
+     * @param id
+     * @param name
+     * @param price
+     * @param stock
+     * @param min
+     * @param max
+     */
     public Part(int id, String name, double price, int stock, int min, int max) {
         this.id = id;
         this.name = name;
