@@ -11,8 +11,8 @@ import java.util.List;
 
 /**
  *
- * Responsible for providing the initial data when the application launches, as
- * well as providing additional static members for testing and maintaining data
+ * Responsible for providing the initial data when the application launches. 
+ * Provides additional static members for testing and maintaining data
  * integrity throughout the application life cycle.
  * 
  * @author felix.caban
@@ -22,6 +22,11 @@ import java.util.List;
  */
 public final class DataManager 
 {
+    
+    //================================================================================
+    // Properties
+    //================================================================================
+    
     /**
      * 
      * The next available {@link felixcaban.models.Part#id PartId}.
@@ -64,11 +69,17 @@ public final class DataManager
      */
     private static int productIndexToModify;
     
+    
+    //================================================================================
+    // Methods
+    //================================================================================
+    
     /**
      *
      * Instantiates multiple {@link felixcaban.models.Part Part} and {@link felixcaban.models.Product Product}
-     * objects upon program start for testing the application. Also sets the seeds for auto-generating the
-     * {@link felixcaban.models.Part#id PartId} and {@link felixcaban.models.Product#id ProductId}.
+     * objects upon program start for testing the application. 
+     * Also sets the seeds for auto-generating the {@link felixcaban.models.Part#id PartId} 
+     * and {@link felixcaban.models.Product#id ProductId}.
      * 
      */
     public static void LoadDataOnStart()
@@ -132,8 +143,9 @@ public final class DataManager
 
     /**
      *
-     * Increments the part Id for the next {@link felixcaban.models.Part Part}
-     * that is created.
+     * Increments the {@link #partId partId} for the next {@link felixcaban.models.Part Part} that is added.  
+     * Is triggered once the {@link felixcaban.controllers.AddPartFormController AddPartForm}
+     * saves a new {@link felixcaban.models.Part Part}.
      * 
      */
     public static void incrementPartId()
@@ -145,8 +157,9 @@ public final class DataManager
 
     /**
      *
-     * Increments the product Id for the next {@link felixcaban.models.Product Product}
-     * that is created.
+     * Increments the {@link #productId productId} for the next {@link felixcaban.models.Product Product} that is added.  
+     * Is triggered once the {@link felixcaban.controllers.AddProductFormController AddProductForm}
+     * saves a new {@link felixcaban.models.Product Product}.
      * 
      */
     public static void incrementProductId()
@@ -158,7 +171,9 @@ public final class DataManager
 
     /**
      *
-     * Gets the next auto-generated {@link felixcaban.models.Part#id PartId}.
+     * Gets the next auto-generated {@link felixcaban.models.Part#id PartId}. 
+     * Provides it to the {@link felixcaban.controllers.AddPartFormController AddPartForm}
+     * when a new {@link felixcaban.models.Part Part} is created.
      * 
      * @return the auto-generated {@link felixcaban.models.Part#id PartId} for
      * the next {@link felixcaban.models.Part Part} object instantiated.
@@ -171,9 +186,11 @@ public final class DataManager
         
     }
 
-    /**
+     /**
      *
-     * Gets the next auto-generated {@link felixcaban.models.Product#id ProductId}.
+     * Gets the next auto-generated {@link felixcaban.models.Product#id ProductId}. 
+     * Provides it to the {@link felixcaban.controllers.AddProductFormController AddProductForm}
+     * when a new {@link felixcaban.models.Product Product} is created.
      * 
      * @return the auto-generated {@link felixcaban.models.Product#id ProductId} for
      * the next {@link felixcaban.models.Product Product} object instantiated.
@@ -188,7 +205,8 @@ public final class DataManager
     
     /**
      *
-     * Sets the {@link felixcaban.models.Part Part} that is currently being modified.
+     * Sets the {@link felixcaban.models.Part Part} that is currently being modified. 
+     * It will be used to populate the {@link felixcaban.controllers.ModifyPartFormController ModifyPartForm}.
      * 
      * @param index the index of the {@link felixcaban.models.Part Part} that is currently being modified.
      * @param part the {@link felixcaban.models.Part Part} that is currently being modified.
@@ -202,12 +220,13 @@ public final class DataManager
         
     }
     
-    /**
+     /**
      *
-     * Sets the {@link felixcaban.models.Product Product} that is currently being modified.
+     * Sets the {@link felixcaban.models.Product Product} that is currently being modified. 
+     * It will be used to populate the {@link felixcaban.controllers.ModifyProductFormController ModifyProductForm}.
      * 
-     * @param index the index of the {@link felixcaban.models.Product Product} that is currently being modified.
-     * @param product the {@link felixcaban.models.Product Product} that is currently being modified.
+     * @param index the index of the {@link felixcaban.models.Part Part} that is currently being modified.
+     * @param product the {@link felixcaban.models.Part Part} that is currently being modified.
      * 
      */
     public static void setProductToModify(int index, Product product)
@@ -220,9 +239,11 @@ public final class DataManager
     
     /**
      *
-     * Gets the {@link felixcaban.models.Part Part} that is currently being modified.
+     * Gets the {@link felixcaban.models.Part Part} that is currently being modified. 
+     * Used to populate the {@link felixcaban.controllers.ModifyPartFormController ModifyPartForm}.
      * 
      * @return the {@link felixcaban.models.Part Part} that is currently being modified.
+     * 
      */
     public static Part getPartToModify()
     {
@@ -233,9 +254,11 @@ public final class DataManager
     
     /**
      *
-     * Gets the index of the {@link felixcaban.models.Part Part} that is currently being modified.
+     * Gets the index of the {@link felixcaban.models.Part Part} that is currently being modified. 
+     * Used to populate the {@link felixcaban.controllers.ModifyPartFormController ModifyPartForm}.
      * 
      * @return the index of the {@link felixcaban.models.Part Part} that is currently being modified.
+     * 
      */
     public static int getPartIndexToModify()
     {
@@ -246,9 +269,10 @@ public final class DataManager
     
     /**
      *
-     * Gets the {@link felixcaban.models.Product Product} that is currently being modified.
+     * Gets the {@link felixcaban.models.Product Product} that is currently being modified. 
+     * Used to populate the {@link felixcaban.controllers.ModifyProductFormController ModifyProductForm}.
      * 
-     * @return the {@link felixcaban.models.Product Product} that is currently being modified.
+     * @return the {@link felixcaban.models.Part Part} that is currently being modified.
      * 
      */
     public static Product getProductToModify()
@@ -260,9 +284,10 @@ public final class DataManager
     
     /**
      *
-     * Gets the index of the {@link felixcaban.models.Product Product} that is currently being modified.
+     * Gets the index of the {@link felixcaban.models.Product Product} that is currently being modified. 
+     * Used to populate the {@link felixcaban.controllers.ModifyProductFormController ModifyProductForm}.
      * 
-     * @return the index of the {@link felixcaban.models.Product Product} that is currently being modified.
+     * @return the index of the {@link felixcaban.models.Part Part} that is currently being modified.
      * 
      */
     public static int getProductIndexToModify()
@@ -274,7 +299,8 @@ public final class DataManager
     
     /**
      *
-     * Tests if a string is an integer.
+     * Tests if a string is an integer. 
+     * Returns true if string is an integer, false if it is not.
      * 
      * @param input string to test.
      * @return true if string is an integer, false if it is not.
@@ -296,7 +322,8 @@ public final class DataManager
     
     /**
      *
-     * Tests if a string is an double.
+     * Tests if a string is an double. 
+     * Returns true if string is a double, false if it is not.
      * 
      * @param input string to test.
      * @return true if string is a double, false if it is not.
@@ -319,7 +346,8 @@ public final class DataManager
     
     /**
      *
-     * Tests if a {@link felixcaban.models.Part Part} exists in inventory.
+     * Tests if a {@link felixcaban.models.Part Part} exists in inventory. 
+     * Returns true if i is a valid {@link felixcaban.models.Part#id PartId}, false if it is not.
      * 
      * @param i the integer to test to determine if it is a valid {@link felixcaban.models.Part#id PartId}.
      * @return true if integer is a valid {@link felixcaban.models.Part#id PartId}, false if it is not.
@@ -343,7 +371,8 @@ public final class DataManager
     
      /**
      *
-     * Tests if a {@link felixcaban.models.Product Product} exists in inventory.
+     * Tests if a {@link felixcaban.models.Product Product} exists in inventory. 
+     * Returns true if i is a valid {@link felixcaban.models.Product#id ProductId}, false if it is not.
      * 
      * @param i the integer to test to determine if it is a valid {@link felixcaban.models.Product#id ProductId}.
      * @return true if integer is a valid {@link felixcaban.models.Product#id ProductId}, false if it is not.

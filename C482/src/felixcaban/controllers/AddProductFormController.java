@@ -9,8 +9,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,7 +30,9 @@ import javax.swing.JOptionPane;
 
 /**
  * 
- * FXML Controller class for AddProductForm.fxml
+ * FXML Controller class for AddProductForm.fxml. 
+ * The controller for the UI to add a new {@link felixcaban.models.Product Product} 
+ * to {@link felixcaban.models.Inventory Inventory}.
  *
  * @author felix.caban
  * @version 1.0
@@ -41,6 +41,10 @@ import javax.swing.JOptionPane;
  */
 public class AddProductFormController implements Initializable 
 {
+    
+    //================================================================================
+    // UI Controls
+    //================================================================================
     
     @FXML
     private TextField txtId;
@@ -53,9 +57,7 @@ public class AddProductFormController implements Initializable
     @FXML
     private TextField txtMax;
     @FXML
-    private TextField txtMin;
-    
-    
+    private TextField txtMin;   
     @FXML
     private Pane partPane;
     @FXML
@@ -64,7 +66,6 @@ public class AddProductFormController implements Initializable
     private Button btnPartAdd;
     @FXML
     private Pane partPane1;
-    
     @FXML
     private TableView<Part> allPartsTable;  
     @FXML
@@ -75,14 +76,12 @@ public class AddProductFormController implements Initializable
     private TableColumn<Part, Integer> colPartInventoryLevelA;
     @FXML
     private TableColumn<Part, Double> colPartCostA;
-    
     @FXML
     private Button btnPartRemove;
     @FXML
     private Button btnSave;
     @FXML
     private Button btnCancel;  
-    
     @FXML
     private TableView<Part> includedPartsTable;
     @FXML
@@ -93,15 +92,41 @@ public class AddProductFormController implements Initializable
     private TableColumn<Part, Integer> colPartInventoryLevelB;
     @FXML
     private TableColumn<Part, Double> colPartCostB;
-    
-    ObservableList<Part> includedParts = FXCollections.observableArrayList();
     @FXML
     private ListView<String> lstErrorList;
-
+    
+    
+    //================================================================================
+    // Properties
+    //================================================================================
+    
     /**
-     * Initializes the controller class.
-     * @param url
-     * @param rb
+     * 
+     * List of {@link felixcaban.models.Part Parts} that the new {@link felixcaban.models.Product Product}
+     * will be composed of.
+     * 
+     */
+    private ObservableList<Part> includedParts = FXCollections.observableArrayList();
+    
+    /**
+     * 
+     * List of validation errors from the form input.
+     */
+    private ObservableList<String> inputErrors = FXCollections.observableArrayList();       
+    
+    
+    //================================================================================
+    // Initializer
+    //================================================================================
+    
+    /**
+     * 
+     * Initializes the controller class. 
+     * Sets the initial UI control properties.
+     * 
+     * @param url an optional URL that can be passed.
+     * @param rb an optional ResourceBundle that can be passed.
+     * 
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) 
@@ -120,50 +145,24 @@ public class AddProductFormController implements Initializable
         colPartNameB.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPartInventoryLevelB.setCellValueFactory(new PropertyValueFactory<>("stock"));
         colPartCostB.setCellValueFactory(new PropertyValueFactory<>("price"));
-        includedPartsTable.setItems(includedParts);   
-        
-        FilteredList<Part> filteredParts = new FilteredList<>(Inventory.getAllParts(), b -> true);
-        
-        txtPartSearch.textProperty().addListener((observable, oldValue, newValue) -> 
-        {
-            
-            filteredParts.setPredicate(p -> 
-            {
-                
-                if(newValue == null || newValue.isEmpty())
-                {
-                    
-                    return true;
-                    
-                }
-                
-                String lowerCaseFilter = newValue.toLowerCase();
-                
-                if (p.getName().toLowerCase().indexOf(lowerCaseFilter) != -1)
-                {
-                    
-                    return true;
-                    
-                }
-                else if (String.valueOf(p.getId()).indexOf(newValue) != -1)
-                {
-                    
-                    return true;
-                    
-                }
-                
-                else return false;
-                
-            });
-            
-        });
-        
-        SortedList<Part> sortedParts = new SortedList<> (filteredParts);
-        sortedParts.comparatorProperty().bind(allPartsTable.comparatorProperty());
-        allPartsTable.setItems(sortedParts);
+        includedPartsTable.setItems(includedParts); 
         
     }    
+    
+    
+    //================================================================================
+    // Methods
+    //================================================================================
 
+    /**
+     * 
+     * Handles the button to cancel adding the {@link felixcaban.models.Product Product} to inventory. 
+     * Returns the user to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * 
+     * @param event on action.
+     * @throws IOException thrown if the user can not be returned to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * 
+     */
     @FXML
     private void handleBtnCancelAction(ActionEvent event) throws IOException 
     {
@@ -172,6 +171,15 @@ public class AddProductFormController implements Initializable
         
     }
 
+    /**
+     * 
+     * Handles the button to add the selected {@link felixcaban.models.Part Part} to the product. 
+     * If no {@link felixcaban.models.Part Part} is selected, a message dialog will prompt the user
+     * to select a part.
+     * 
+     * @param event on action.
+     * 
+     */
     @FXML
     private void handleBtnAddPartAction(ActionEvent event) 
     {
@@ -197,6 +205,15 @@ public class AddProductFormController implements Initializable
         
     }
 
+     /**
+     * 
+     * Handles the button to remove the selected {@link felixcaban.models.Part Part} from the product. 
+     * If no {@link felixcaban.models.Part Part} is selected, a message dialog will prompt the user
+     * to select a part.
+     * 
+     * @param event on action.
+     * 
+     */
     @FXML
     private void handleBtnRemovePartAction(ActionEvent event) 
     {
@@ -204,7 +221,7 @@ public class AddProductFormController implements Initializable
         if(includedPartsTable.getSelectionModel().getSelectedItem() == null)
         {
 
-            JOptionPane.showMessageDialog(null, "Please select an Part to remove.", "Selection Error", 0);
+            JOptionPane.showMessageDialog(null, "Please select a Part to remove.", "Selection Error", 0);
 
         }   
         else
@@ -224,15 +241,29 @@ public class AddProductFormController implements Initializable
         
     }
 
+    /**
+     * 
+     * Handles the button to save the entered {@link felixcaban.models.Product Product} being added to inventory.  
+     * Also perform validation on user input to ensure that all fields are complete and all data types match.
+     * 
+     * @param event on action.
+     * @throws IOException if the user can not be returned to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * 
+     */
     @FXML
-    private void handleBtnSaveAction(ActionEvent event) throws IOException 
+    private void handleBtnSaveAction(ActionEvent event) throws IOException
     {
+                
+        inputErrors.clear(); 
+        validateUserInput();     
         
-        try
+        if (inputErrors.isEmpty())
         {
             
+            int productId = DataManager.getNextProductId();
+            
             var tempProduct = new Product(
-                        DataManager.getNextProductId(), 
+                        productId, 
                         txtName.getText(), 
                         Double.parseDouble(txtPriceCost.getText()), 
                         Integer.parseInt(txtInv.getText()), 
@@ -246,31 +277,28 @@ public class AddProductFormController implements Initializable
             }
 
             Inventory.addProduct(tempProduct);
-
+            DataManager.incrementProductId();            
             returnToMainForm(event); 
+            
         }
-        catch(Exception e)
+        else
         {
-            lstErrorList.setItems(validateUserInput());
+            
+            lstErrorList.setItems(inputErrors);              
+            
         }
-        
-    }
-    
-    private void returnToMainForm(ActionEvent event) throws IOException
-    {
-        
-        DataManager.incrementProductId();
-        
-        Parent mainForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/MainForm.fxml"));
-        Scene mainFormScene = new Scene(mainForm);
-        
-        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        
-        window.setScene(mainFormScene);
-        window.show();  
         
     }
 
+    /**
+     * 
+     * Handles the entered text in the txtPartSearch text box. 
+     * Initiates a search on existing {@link felixcaban.models.Part Parts} in inventory. If
+     * the {@link felixcaban.models.Part Part} exists, it is selected.
+     * 
+     * @param event on key press.
+     * 
+     */
     @FXML
     private void handlePartSearchAction(KeyEvent event) 
     {
@@ -290,9 +318,23 @@ public class AddProductFormController implements Initializable
             {
                 
                 int partId = Integer.parseInt(txtPartSearch.getText());
-                Inventory.lookupPart(partId);
-                allPartsTable.scrollTo(Inventory.lookupPart(partId));
-                allPartsTable.getSelectionModel().select(Inventory.lookupPart(partId));
+                
+                if (!DataManager.partExists(partId))
+                {
+                    
+                    allPartsTable.setItems(Inventory.getAllParts());
+                    allPartsTable.getSelectionModel().clearSelection();
+                    allPartsTable.scrollTo(0);
+                    JOptionPane.showMessageDialog(null, "The Part your entered does not exist.", "Search Error", 0);
+                    
+                }
+                else
+                {
+                    
+                    allPartsTable.scrollTo(Inventory.lookupPart(partId));
+                    allPartsTable.getSelectionModel().select(Inventory.lookupPart(partId));
+                    
+                }
 
             }
             else
@@ -302,22 +344,52 @@ public class AddProductFormController implements Initializable
                 allPartsTable.setItems(Inventory.lookupPart(partName));
 
             }            
-        }  
+        }        
         
     }
     
-    private ObservableList<String> validateUserInput()
+    /**
+     * 
+     * Returns the user to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * 
+     * @param event on action.
+     * @throws IOException thrown if the user can not be returned to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * 
+     */
+    private void returnToMainForm(ActionEvent event) throws IOException
     {
         
-        ObservableList<String> inputErrors = FXCollections.observableArrayList();      
-       
-       
+        Parent mainForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/MainForm.fxml"));
+        Scene mainFormScene = new Scene(mainForm);
+        
+        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        
+        window.setScene(mainFormScene);
+        window.show();  
+        
+    }
+    
+    /**
+     * 
+     * Validates the UI text box input. 
+     * If errors are found, they are added to the {@link #inputErrors inputError} list.
+     * 
+     */
+    private void validateUserInput()
+    {        
+                
+        int min = 0;
+        int max = 0;
+        int inv = 0;
+                
         if(txtName.getText() == null || txtName.getText().isEmpty())
         {
 
             inputErrors.add("Name is a required field.");
 
         } 
+        
+        
         
         if(txtInv.getText() == null || txtInv.getText().isEmpty())
         {
@@ -331,6 +403,12 @@ public class AddProductFormController implements Initializable
             inputErrors.add("Inv must be an integer.");
 
         }
+        else
+        {
+            inv = Integer.parseInt(txtInv.getText());
+        }
+                
+        
         
         if(txtPriceCost.getText() == null || txtPriceCost.getText().isEmpty())
         {
@@ -344,6 +422,8 @@ public class AddProductFormController implements Initializable
             inputErrors.add("Price/Cost must be a decimal or integer.");
 
         }
+        
+        
 
         if(txtMax.getText() == null || txtMax.getText().isEmpty())
         {
@@ -357,6 +437,12 @@ public class AddProductFormController implements Initializable
             inputErrors.add("Max must be an integer.");
 
         }
+        else
+        {
+            max = Integer.parseInt(txtMax.getText());
+        }
+        
+        
 
         if(txtMin.getText() == null || txtMin.getText().isEmpty())
         {
@@ -368,11 +454,37 @@ public class AddProductFormController implements Initializable
         {
 
             inputErrors.add("Min must be an integer.");
-
+            
+        }
+        else
+        {
+            min = Integer.parseInt(txtMin.getText());
         }
         
-        return inputErrors;
         
+        if (max < min)
+        {
+            
+            inputErrors.add("Max can not be less than Min.");            
+            
+        }
+        
+        
+        if (inv > max)
+        {
+            
+            inputErrors.add("Inv can not be greater than Max.");            
+            
+        }
+        
+        
+        if (inv < min)
+        {
+            
+            inputErrors.add("Inv can not be less than Min.");            
+            
+        }
+        
+       
     }
-    
 }

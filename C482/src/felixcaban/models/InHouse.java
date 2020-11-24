@@ -2,7 +2,7 @@ package felixcaban.models;
 
 /**
  *
- * Represents an in-house part, which extends {@link felixcaban.models.Part Part}.
+ * Represents an in-house part, which extends {@link felixcaban.models.Part Part}. 
  * This class adds the {@link #machineId machineId} for in-house parts.
  * 
  * @author felix.caban
@@ -12,12 +12,22 @@ package felixcaban.models;
  */
 public class InHouse extends Part
 {  
+    
+    //================================================================================
+    // Properties
+    //================================================================================
+    
     /**
      * 
      * The machine id of the in-house part.
      * 
      */
     private int machineId;
+    
+    
+    //================================================================================
+    // Constructors
+    //================================================================================
 
     /**
      *
@@ -40,6 +50,11 @@ public class InHouse extends Part
         
     }
     
+    
+    //================================================================================
+    // Setters
+    //================================================================================
+    
     /**
      *
      * Sets the {@link #machineId machineId} of the in-house part.
@@ -53,6 +68,11 @@ public class InHouse extends Part
         this.machineId = machineId;  
         
     }
+    
+    
+    //================================================================================
+    // Getters
+    //================================================================================
     
     /**
      *

@@ -28,7 +28,8 @@ import javax.swing.JOptionPane;
 
 /**
  * 
- * FXML Controller class for MainForm.fxml
+ * FXML Controller class for MainForm.fxml. 
+ * The controller for the initial UI when the application is launched.
  *
  * @author felix.caban
  * @version 1.0
@@ -36,10 +37,12 @@ import javax.swing.JOptionPane;
  * 
  */
 public class MainFormController implements Initializable 
-{    
-    Part selectedPart;
-    Product selectedProduct;
-
+{   
+    
+    //================================================================================
+    // UI Controls
+    //================================================================================
+    
     @FXML
     private Pane partPane;
     @FXML
@@ -60,8 +63,6 @@ public class MainFormController implements Initializable
     private Button btnPartModify;
     @FXML
     private Button btnPartDelete;
-    
-    
     @FXML
     private Pane productPane;
     @FXML
@@ -81,16 +82,44 @@ public class MainFormController implements Initializable
     @FXML
     private Button btnProductModify;
     @FXML
-    private Button btnProductDelete;
-    
-    
+    private Button btnProductDelete;   
     @FXML
     private Button btnExit;
     
+    
+    //================================================================================
+    // Properties
+    //================================================================================
+    
     /**
-     * Initializes the controller class.
-     * @param url
-     * @param rb
+     * 
+     * The selected {@link felixcaban.models.Part Part} from the
+     * {@link felixcaban.controllers.MainFormController#partTable PartTable}.
+     * 
+     */
+    private Part selectedPart;
+    
+    /**
+     * 
+     * The selected {@link felixcaban.models.Product Product} from the
+     * {@link felixcaban.controllers.MainFormController#productTable ProductTable}.
+     * 
+     */
+    private Product selectedProduct;
+    
+    
+    //================================================================================
+    // Initializer
+    //================================================================================
+    
+      /**
+     * 
+     * Initializes the controller class. 
+     * Sets the initial UI control properties.
+     * 
+     * @param url an optional URL that can be passed.
+     * @param rb an optional ResourceBundle that can be passed.
+     * 
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) 
@@ -109,7 +138,20 @@ public class MainFormController implements Initializable
         productTable.setItems(Inventory.getAllProducts()); 
                 
     }    
+    
+    
+    //================================================================================
+    // Event Handlers
+    //================================================================================
 
+    /**
+     * 
+     * Handles the button to exit the application. 
+     * Shuts down the application when the user selects this button.
+     * 
+     * @param event on action.
+     * 
+     */
     @FXML
     private void handleBtnExitAction(ActionEvent event) 
     {
@@ -118,6 +160,15 @@ public class MainFormController implements Initializable
         
     }
 
+     /**
+     * 
+     * Handles the button to navigate to the {@link felixcaban.controllers.AddPartFormController AddPartForm}. 
+     * Once there the user can add a new {@link felixcaban.models.Part Part}.
+     * 
+     * @param event on action.
+     * @throws IOException thrown if the user can not be sent to the {@link felixcaban.controllers.AddPartFormController AddPartForm}.
+     * 
+     */
     @FXML
     private void handleBtnPartAddAction(ActionEvent event) throws IOException
     {
@@ -131,7 +182,16 @@ public class MainFormController implements Initializable
         window.show();  
         
     }
-
+    
+    /**
+     * 
+     * Handles the button to navigate to the {@link felixcaban.controllers.ModifyPartFormController ModifyPartForm}. 
+     * Once there a user can modify an existing {@link felixcaban.models.Part Part}.
+     * 
+     * @param event on action.
+     * @throws IOException thrown if the user can not be sent to the {@link felixcaban.controllers.ModifyPartFormController ModifyPartForm}.
+     * 
+     */
     @FXML
     private void handleBtnPartModifyAction(ActionEvent event) throws IOException 
     {
@@ -159,6 +219,14 @@ public class MainFormController implements Initializable
         
     }
 
+     /**
+     * 
+     * Handles the button to delete the selected {@link felixcaban.models.Part Part}. 
+     * A part must be selected or the user will be prompted to select one.
+     * 
+     * @param event on action.
+     * 
+     */
     @FXML
     private void handleBtnPartDeleteAction(ActionEvent event)
     {
@@ -179,12 +247,25 @@ public class MainFormController implements Initializable
                 var selectedPart = partTable.getSelectionModel().getSelectedItem();
                 Inventory.deletePart(selectedPart);
                 
+                partTable.setItems(Inventory.getAllParts());
+                partTable.getSelectionModel().clearSelection();
+                partTable.scrollTo(0);
+                
             }
             
         }
         
     }
     
+    /**
+     * 
+     * Handles the button to navigate to the {@link felixcaban.controllers.AddProductFormController AddProductForm}. 
+     * Once there a user can add a new {@link felixcaban.models.Product Product}.
+     * 
+     * @param event on action.
+     * @throws IOException thrown if the user can not be sent to the {@link felixcaban.controllers.AddProductFormController AddProductForm}.
+     * 
+     */
     @FXML
     private void handleBtnProductAddAction(ActionEvent event) throws IOException
     {
@@ -198,7 +279,16 @@ public class MainFormController implements Initializable
         window.show(); 
         
     }
-
+    
+     /**
+     * 
+     * Handles the button to navigate to the {@link felixcaban.controllers.ModifyProductFormController ModifyProductForm}. 
+     * Once there a user can modify an existing {@link felixcaban.models.Product Product}.
+     * 
+     * @param event on action.
+     * @throws IOException thrown if the user can not be sent to the {@link felixcaban.controllers.ModifyProductFormController ModifyProductForm}.
+     * 
+     */
     @FXML
     private void handleBtnProductModifyAction(ActionEvent event) throws IOException
     {
@@ -226,6 +316,14 @@ public class MainFormController implements Initializable
                 
     }
     
+     /**
+     * 
+     * Handles the button to delete the selected {@link felixcaban.models.Product Product}. 
+     * A product must be selected or the user will be prompted to select one.
+     * 
+     * @param event on action.
+     * 
+     */
     @FXML
     private void handleBtnProductDeleteAction(ActionEvent event)
     {
@@ -245,6 +343,10 @@ public class MainFormController implements Initializable
 
                 var selectedProduct = productTable.getSelectionModel().getSelectedItem();
                 Inventory.deleteProduct(selectedProduct);
+                
+                productTable.setItems(Inventory.getAllProducts());
+                productTable.getSelectionModel().clearSelection();
+                productTable.scrollTo(0);
 
             }  
         }
@@ -255,6 +357,15 @@ public class MainFormController implements Initializable
         
     }
 
+     /**
+     * 
+     * Handles the entered text in the {@link #txtPartSearch txtPartSearch} text box. 
+     * Initiates a search on existing {@link felixcaban.models.Part Parts} in inventory. If
+     * the {@link felixcaban.models.Part Part} exists, it is selected.
+     * 
+     * @param event on key press.
+     * 
+     */
     @FXML
     private void handlePartSearchAction(KeyEvent event) 
     {
@@ -304,6 +415,15 @@ public class MainFormController implements Initializable
         
     }
 
+      /**
+     * 
+     * Handles the entered text in the {@link #txtProductSearch txtProductSearch} text box. 
+     * Initiates a search on existing {@link felixcaban.models.Part Parts} in inventory. If
+     * the {@link felixcaban.models.Part Part} exists, it is selected.
+     * 
+     * @param event on key press.
+     * 
+     */
     @FXML
     private void handleProductSearchAction(KeyEvent event) 
     {

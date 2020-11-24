@@ -5,9 +5,9 @@ import javafx.collections.ObservableList;
 
 /**
  *
- * Static class representing the current inventory, along with all members to 
- * process {@link felixcaban.models.Part Parts} and 
- * {@link felixcaban.models.Product Products}.
+ * Static class representing the current inventory. 
+ * Also includes all members to process {@link felixcaban.models.Part Parts} 
+ * and {@link felixcaban.models.Product Products}.
  * 
  * @author felix.caban
  * @version 1.0
@@ -16,6 +16,11 @@ import javafx.collections.ObservableList;
  */
 public final class Inventory 
 {
+    
+    //================================================================================
+    // Properties
+    //================================================================================
+    
     /**
      * 
      * List of all {@link felixcaban.models.Part Parts} currently in inventory.
@@ -28,7 +33,45 @@ public final class Inventory
      * List of all {@link felixcaban.models.Product Products} currently in inventory.
      * 
      */
-    private static final ObservableList<Product> allProducts = FXCollections.observableArrayList();    
+    private static final ObservableList<Product> allProducts = FXCollections.observableArrayList();  
+    
+    
+    //================================================================================
+    // Getters
+    //================================================================================
+    
+    /**
+     *
+     * Gets a list of all {@link felixcaban.models.Part Parts} in inventory.
+     * 
+     * @return a list of all {@link felixcaban.models.Part Parts} in inventory.
+     * 
+     */
+    public static ObservableList<Part> getAllParts()
+    {
+        
+        return allParts;
+        
+    }
+    
+     /**
+     *
+     * Gets a list of all {@link felixcaban.models.Product Products} in inventory.
+     * 
+     * @return a list of all {@link felixcaban.models.Product Products} in inventory.
+     * 
+     */
+    public static ObservableList<Product> getAllProducts()
+    {
+        
+        return allProducts;
+        
+    }
+    
+    
+    //================================================================================
+    // Methods
+    //================================================================================
 
     /**
      *
@@ -220,34 +263,6 @@ public final class Inventory
         
         return true;
      
-    }
-    
-    /**
-     *
-     * Gets a list of all {@link felixcaban.models.Part Parts} in inventory.
-     * 
-     * @return a list of all {@link felixcaban.models.Part Parts} in inventory.
-     * 
-     */
-    public static ObservableList<Part> getAllParts()
-    {
-        
-        return allParts;
-        
-    }
-    
-     /**
-     *
-     * Gets a list of all {@link felixcaban.models.Product Products} in inventory.
-     * 
-     * @return a list of all {@link felixcaban.models.Product Products} in inventory.
-     * 
-     */
-    public static ObservableList<Product> getAllProducts()
-    {
-        
-        return allProducts;
-        
     }
     
 }

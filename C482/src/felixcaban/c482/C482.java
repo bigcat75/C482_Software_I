@@ -9,8 +9,8 @@ import javafx.stage.Stage;
 
 /**
  * 
- * Contains the main function for the C482 application. 
- * It creates the stage and sets the first scene that will be visible to the end 
+ * Contains the main method for the C482 application that manages inventory.      
+ * This class creates the stage and sets the first scene that will be visible to the end 
  * user. It also calls the {@link felixcaban.data.DataManager#LoadDataOnStart() 
  * LoadDataOnStart()} method to load the initial data for the application.
  * 
@@ -26,14 +26,16 @@ public class C482 extends Application
 
     /**
      * 
-     * Declares the Stage and specifies the scene to show upon program load.
+     * Declares the Stage and specifies the scene to show upon program load. 
+     * Upon execution, the user will be taken to the {@link felixcaban.controllers.MainFormController MainForm}.
      * 
      * @param stage the stage set upon program load.
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception thrown if the stage is not set correctly and the 
+     * application can not start.
      * 
      */
     @Override
-    public void start(Stage stage) throws Exception 
+    public void start(Stage stage) throws Exception
     {        
         stage.setTitle("C482 - Felix Caban");
         Parent root = FXMLLoader.load(getClass().getResource("/felixcaban/views/MainForm.fxml"));
@@ -44,7 +46,9 @@ public class C482 extends Application
     
     /**
      * 
-     * Main method and entry point into the application.
+     * Main method and entry point into the application. 
+     * It also calls the {@link felixcaban.data.DataManager#LoadDataOnStart() 
+     * LoadDataOnStart()} method to load the initial data for the application.
      *
      * @param args arguments that may get passed when the application loads.
      * 
@@ -54,9 +58,5 @@ public class C482 extends Application
         DataManager.LoadDataOnStart();
         launch(args);  
     }
-    
-    // TODO Implement JavaDocs for remainder of Controller classes.
-    // TODO Implement min/max check
-    // TODO Implement Inv has to be between min/max
-    
+
 }

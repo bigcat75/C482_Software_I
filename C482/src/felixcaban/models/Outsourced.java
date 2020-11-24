@@ -2,7 +2,7 @@ package felixcaban.models;
 
 /**
  *
- * Represents an outsourced part, which extends {@link felixcaban.models.Part Part}.
+ * Represents an outsourced part, which extends {@link felixcaban.models.Part Part}. 
  * This class adds the {@link #companyName CompanyName} for outsourced parts.
  * 
  * @author felix.caban
@@ -12,12 +12,22 @@ package felixcaban.models;
  */
 public class Outsourced extends Part
 {   
+    
+    //================================================================================
+    // Properties
+    //================================================================================
+    
      /**
      * 
      * The company name of the in-house part.
      * 
      */
     private String companyName;
+    
+    
+    //================================================================================
+    // Constructors
+    //================================================================================
     
      /**
      *
@@ -40,6 +50,11 @@ public class Outsourced extends Part
         
     }
     
+    
+    //================================================================================
+    // Setters
+    //================================================================================
+    
     /**
      *
      * Sets the {@link #companyName companyName} of the outsourced part.
@@ -53,6 +68,11 @@ public class Outsourced extends Part
         this.companyName = companyName;
         
     }
+    
+    
+    //================================================================================
+    // Getters
+    //================================================================================
     
     /**
      *

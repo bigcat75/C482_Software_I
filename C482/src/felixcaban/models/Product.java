@@ -5,7 +5,7 @@ import javafx.collections.ObservableList;
 
 /**
  *
- * Represents a product in inventory, which may or may not be composed of one or 
+ * Represents a product in inventory, which may or may not be composed of zero or 
  * many {@link felixcaban.models.Part Parts}.
  * 
  * @author felix.caban
@@ -16,9 +16,13 @@ import javafx.collections.ObservableList;
 public class Product
 {    
     
+    //================================================================================
+    // Properties
+    //================================================================================
+    
     /**
      * 
-     * If applicable, the list of {@link felixcaban.models.Part Parts} that the product is composed of.
+     * The list of {@link felixcaban.models.Part Parts} that the product is composed of, if any.
      * 
      */
     private ObservableList<Part> associatedParts = FXCollections.observableArrayList();;
@@ -63,7 +67,12 @@ public class Product
      * The maximum quantity allowed on-hand of the product.
      * 
      */
-    private int max;   
+    private int max; 
+    
+    
+    //================================================================================
+    // Constructors
+    //================================================================================
 
    /**
      *
@@ -88,6 +97,11 @@ public class Product
         this.max = max;
         
     }
+    
+    
+    //================================================================================
+    // Setters
+    //================================================================================
 
     /**
      * 
@@ -173,6 +187,11 @@ public class Product
         
     }
     
+    
+    //================================================================================
+    // Getters
+    //================================================================================
+    
     /**
      * 
      * Gets the {@link felixcaban.models.Product#id id} of the product.
@@ -257,6 +276,24 @@ public class Product
         
     }
     
+    /**
+     *
+     * Gets a list of all associated {@link felixcaban.models.Part Parts} for the product.
+     * 
+     * @return a list of all associated {@link felixcaban.models.Part Parts}.
+     */
+    public ObservableList<Part> getAllAssociatedParts()
+    {
+        
+        return associatedParts;
+        
+    }
+    
+    
+    //================================================================================
+    // Methods
+    //================================================================================
+    
      /**
      * 
      * Adds any applicable {@link felixcaban.models.Part Parts} to the product.
@@ -284,19 +321,6 @@ public class Product
     {
         
         return associatedParts.removeIf(p -> (p.equals(selectedAssociatedPart)));
-        
-    }
-    
-    /**
-     *
-     * Gets a list of all associated {@link felixcaban.models.Part Parts} for the product.
-     * 
-     * @return a list of all associated {@link felixcaban.models.Part Parts}.
-     */
-    public ObservableList<Part> getAllAssociatedParts()
-    {
-        
-        return associatedParts;
         
     }
     

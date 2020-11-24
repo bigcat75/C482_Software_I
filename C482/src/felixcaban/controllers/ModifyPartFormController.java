@@ -27,7 +27,9 @@ import javafx.stage.Stage;
 
 /**
  * 
- * FXML Controller class for ModifyPartForm.fxml
+ * FXML Controller class for AddPartForm.fxml.
+ * The controller for the UI to modify an existing {@link felixcaban.models.Part Part} 
+ * from {@link felixcaban.models.Inventory Inventory}.
  *
  * @author felix.caban
  * @version 1.0
@@ -37,6 +39,9 @@ import javafx.stage.Stage;
 public class ModifyPartFormController implements Initializable 
 {
     
+    //================================================================================
+    // UI Controls
+    //================================================================================
     @FXML
     private ToggleGroup PartType;
     @FXML
@@ -63,16 +68,55 @@ public class ModifyPartFormController implements Initializable
     private Button btnCancel;
     @FXML
     private Button btnSave;
-    
-    Part currentPart = DataManager.getPartToModify();
-    InHouse currentInHousePart = null;
-    Outsourced currentOutsourcedPart = null;
     @FXML
     private ListView<String> lstErrorList;
-
+    
+    
+    //================================================================================
+    // Properties
+    //================================================================================
+    
     /**
      * 
-     * Initializes the controller class.
+     * The current {@link felixcaban.models.Part Part} from the {@link felixcaban.data.DataManager DataManager}
+     * that is being modified.
+     * 
+     */
+    private Part currentPart = DataManager.getPartToModify();
+    
+    /**
+     * 
+     * The modified {@link felixcaban.models.InHouse InHouse} part from user input
+     * that is being modified.
+     * 
+     */
+    private InHouse currentInHousePart = null;
+    
+    
+    /**
+     * 
+     * The modified {@link felixcaban.models.Outsourced Outsourced} part from user input
+     * that is being modified.
+     * 
+     */
+    private Outsourced currentOutsourcedPart = null;
+    
+    /**
+     * 
+     * List of validation errors from the form input.
+     */
+    private ObservableList<String> inputErrors = FXCollections.observableArrayList();
+    
+    
+    //================================================================================
+    // Initializer
+    //================================================================================
+
+   /**
+     * 
+     * Initializes the controller class. 
+     * Sets the initial UI control properties.
+     * 
      * @param url an optional URL that can be passed.
      * @param rb an optional ResourceBundle that can be passed.
      * 
@@ -116,12 +160,18 @@ public class ModifyPartFormController implements Initializable
        }
         
     }    
+    
+    
+    //================================================================================
+    // Methods
+    //================================================================================
 
-     /**
+      /**
      * 
-     * Handles the radio button for {@link felixcaban.models.InHouse InHouse} parts being modified in inventory.
+     * Handles the radio button for {@link felixcaban.models.InHouse InHouse} parts being modified in inventory. 
+     * If selected, a {@link felixcaban.models.InHouse InHouse} part will be saved.
      * 
-     * @param event the event to handle.
+     * @param event on action.
      * 
      */
     @FXML
@@ -135,9 +185,10 @@ public class ModifyPartFormController implements Initializable
 
     /**
      * 
-     * Handles the radio button for {@link felixcaban.models.Outsourced Outsourced} parts being modified in inventory.
+     * Handles the radio button for {@link felixcaban.models.Outsourced Outsourced} parts being added to inventory. 
+     * If selected, a {@link felixcaban.models.Outsourced Outsourced} part will be saved.
      * 
-     * @param event the event to handle.
+     * @param event on action.
      * 
      */
     @FXML
@@ -149,11 +200,13 @@ public class ModifyPartFormController implements Initializable
         
     }
     
-    /**
+     /**
      * 
-     * Handles the button to cancel modifying the {@link felixcaban.models.Part Part} in inventory.
+     * Handles the button to cancel modifying the {@link felixcaban.models.Part Part} in inventory. 
+     * It then returns the user to the {@link felixcaban.controllers.MainFormController MainForm}.
      * 
-     * @param event the event to handle.
+     * @param event on action.
+     * @throws IOException if the user can not be returned to the {@link felixcaban.controllers.MainFormController MainForm}.
      * 
      */
     @FXML
@@ -164,70 +217,75 @@ public class ModifyPartFormController implements Initializable
         
     }
 
-    /**
+   /**
      * 
-     * Handles the button to save the selected {@link felixcaban.models.Part Part} being modified in inventory.
+     * Handles the button to save the modified {@link felixcaban.models.Part Part} to inventory.  
+     * Also perform validation on user input to ensure that all fields are complete and all data types match.
      * 
-     * @param event the event to handle.
+     * @param event on action.
+     * @throws IOException if the user can not be returned to the {@link felixcaban.controllers.MainFormController MainForm}.
      * 
      */
     @FXML
-    private void handleBtnSaveAction(ActionEvent event)
+    private void handleBtnSaveAction(ActionEvent event) throws IOException
     {
         
-        Part tempPart;
+        Part tempPart = null;
         
-        try
-        {            
-
-            if (rbInHouse.isSelected()) 
+        inputErrors.clear(); 
+        validateUserInput();        
+        
+        if (inputErrors.isEmpty())
+        {
+            
+            if(rbInHouse.isSelected())
             {
 
                 tempPart = new InHouse(
                         currentPart.getId(),
-                        txtName.getText(),
-                        Double.parseDouble(txtPriceCost.getText()),
+                        txtName.getText(), 
+                        Double.parseDouble(txtPriceCost.getText()), 
                         Integer.parseInt(txtInv.getText()), 
-                        Integer.parseInt(txtMin.getText()),  
-                        Integer.parseInt(txtMax.getText()),
+                        Integer.parseInt(txtMin.getText()), 
+                        Integer.parseInt(txtMax.getText()), 
                         Integer.parseInt(txtAddModifyVariable.getText())
                 );
 
-                Inventory.updatePart(DataManager.getPartIndexToModify(), tempPart);
-                returnToMainForm(event);
-
             }
-            else if (rbOutsourced.isSelected()) 
+
+            if(rbOutsourced.isSelected())
             {
 
-                tempPart = new Outsourced(
-                        currentPart.getId(),
-                        txtName.getText(),
-                        Double.parseDouble(txtPriceCost.getText()),
-                        Integer.parseInt(txtInv.getText()), 
-                        Integer.parseInt(txtMin.getText()),  
-                        Integer.parseInt(txtMax.getText()),                    
-                        txtAddModifyVariable.getText()
-                );
+               tempPart = new Outsourced(
+                       currentPart.getId(), 
+                       txtName.getText(), 
+                       Double.parseDouble(txtPriceCost.getText()), 
+                       Integer.parseInt(txtInv.getText()), 
+                       Integer.parseInt(txtMin.getText()), 
+                       Integer.parseInt(txtMax.getText()), 
+                       txtAddModifyVariable.getText()
+               );   
 
-                Inventory.updatePart(DataManager.getPartIndexToModify(), tempPart);
-                returnToMainForm(event);
+            } 
 
-            }
+            Inventory.updatePart(DataManager.getPartIndexToModify(), tempPart);
+            returnToMainForm(event); 
         }
-        catch(Exception e)
-                {
-                    lstErrorList.setItems(validateUserInput());
-                }
+        else
+        {
+            
+            lstErrorList.setItems(inputErrors);              
+            
+        }
             
     }
     
     /**
      * 
-     * Method to return to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * Returns the user to the {@link felixcaban.controllers.MainFormController MainForm}. 
      * 
-     * @param event the event to handle.
-     * @throws IOException 
+     * @param event on action.
+     * @throws IOException thrown if the user can not be returned to the {@link felixcaban.controllers.MainFormController MainForm}.
      * 
      */
     private void returnToMainForm(ActionEvent event) throws IOException
@@ -245,23 +303,25 @@ public class ModifyPartFormController implements Initializable
     
      /**
      * 
-     * Returns a list of validation errors as a result of testing UI text box input.
-     * 
-     * @return a list of validation errors.
+     * Validates the UI text box input. 
+     * If errors are found, they are added to the {@link #inputErrors inputError} list.
      * 
      */
-    private ObservableList<String> validateUserInput()
-    {
-        
-        ObservableList<String> inputErrors = FXCollections.observableArrayList();      
-       
-       
+    private void validateUserInput()
+    {        
+                
+        int min = 0;
+        int max = 0;
+        int inv = 0;
+                
         if(txtName.getText() == null || txtName.getText().isEmpty())
         {
 
             inputErrors.add("Name is a required field.");
 
         } 
+        
+        
         
         if(txtInv.getText() == null || txtInv.getText().isEmpty())
         {
@@ -275,6 +335,12 @@ public class ModifyPartFormController implements Initializable
             inputErrors.add("Inv must be an integer.");
 
         }
+        else
+        {
+            inv = Integer.parseInt(txtInv.getText());
+        }
+                
+        
         
         if(txtPriceCost.getText() == null || txtPriceCost.getText().isEmpty())
         {
@@ -288,6 +354,8 @@ public class ModifyPartFormController implements Initializable
             inputErrors.add("Price/Cost must be a decimal or integer.");
 
         }
+        
+        
 
         if(txtMax.getText() == null || txtMax.getText().isEmpty())
         {
@@ -301,6 +369,12 @@ public class ModifyPartFormController implements Initializable
             inputErrors.add("Max must be an integer.");
 
         }
+        else
+        {
+            max = Integer.parseInt(txtMax.getText());
+        }
+        
+        
 
         if(txtMin.getText() == null || txtMin.getText().isEmpty())
         {
@@ -312,9 +386,15 @@ public class ModifyPartFormController implements Initializable
         {
 
             inputErrors.add("Min must be an integer.");
-
+            
         }
-
+        else
+        {
+            min = Integer.parseInt(txtMin.getText());
+        }
+        
+        
+        
         if (rbInHouse.isSelected())
         {
 
@@ -332,6 +412,8 @@ public class ModifyPartFormController implements Initializable
             }
             
         }
+        
+        
 
         if (rbOutsourced.isSelected())
         {
@@ -343,10 +425,33 @@ public class ModifyPartFormController implements Initializable
 
             }
         
-        }    
+        }  
         
-        return inputErrors;
         
+        if (max < min)
+        {
+            
+            inputErrors.add("Max can not be less than Min.");            
+            
+        }
+        
+        
+        if (inv > max)
+        {
+            
+            inputErrors.add("Inv can not be greater than Max.");            
+            
+        }
+        
+        
+        if (inv < min)
+        {
+            
+            inputErrors.add("Inv can not be less than Min.");            
+            
+        }
+        
+       
     }
 
 }

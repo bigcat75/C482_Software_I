@@ -30,7 +30,9 @@ import javax.swing.JOptionPane;
 
 /**
  * 
- * FXML Controller class for ModifyProductForm.fxml
+ * FXML Controller class for ModifyProductForm.fxml. 
+ * The controller for the UI to modify an existing {@link felixcaban.models.Product Product}
+ * that is in {@link felixcaban.models.Inventory Inventory}.
  *
  * @author felix.caban
  * @version 1.0
@@ -40,6 +42,9 @@ import javax.swing.JOptionPane;
 public class ModifyProductFormController implements Initializable 
 {
     
+    //================================================================================
+    // UI Controls
+    //================================================================================
     @FXML
     private TextField txtId;
     @FXML
@@ -52,8 +57,6 @@ public class ModifyProductFormController implements Initializable
     private TextField txtMax;
     @FXML
     private TextField txtMin;
-    
-    
     @FXML
     private Pane partPane;
     @FXML
@@ -62,7 +65,6 @@ public class ModifyProductFormController implements Initializable
     private Button btnPartAdd;
     @FXML
     private Pane partPane1;
-    
     @FXML
     private TableView<Part> allPartsTable;  
     @FXML
@@ -73,14 +75,12 @@ public class ModifyProductFormController implements Initializable
     private TableColumn<Part, Integer> colPartInventoryLevelA;
     @FXML
     private TableColumn<Part, Double> colPartCostA;
-    
     @FXML
     private Button btnPartRemove;
     @FXML
     private Button btnSave;
     @FXML
     private Button btnCancel;  
-    
     @FXML
     private TableView<Part> includedPartsTable;
     @FXML
@@ -91,16 +91,49 @@ public class ModifyProductFormController implements Initializable
     private TableColumn<Part, Integer> colPartInventoryLevelB;
     @FXML
     private TableColumn<Part, Double> colPartCostB;
-    
-    Product currentProduct = DataManager.getProductToModify();
-    ObservableList<Part> includedParts = FXCollections.observableArrayList();
     @FXML
     private ListView<String> lstErrorList;
+    
+    
+    //================================================================================
+    // Properties
+    //================================================================================
+    
+    /**
+     * 
+     * The current {@link felixcaban.models.Product Product} from the {@link felixcaban.data.DataManager DataManager}
+     * that is being modified.
+     * 
+     */
+    private Product currentProduct = DataManager.getProductToModify();
+    
+    /**
+     * 
+     * List of {@link felixcaban.models.Part Parts} that the existing {@link felixcaban.models.Product Product}
+     * is composed of.
+     * 
+     */
+    private ObservableList<Part> includedParts = FXCollections.observableArrayList(); 
+    
+    /**
+     * 
+     * List of validation errors from the form input.
+     */
+    private ObservableList<String> inputErrors = FXCollections.observableArrayList();
+    
+    
+    //================================================================================
+    // Initializer
+    //================================================================================
 
     /**
-     * Initializes the controller class.
-     * @param url
-     * @param rb
+     * 
+     * Initializes the controller class. 
+     * Sets the initial UI control properties.
+     * 
+     * @param url an optional URL that can be passed.
+     * @param rb an optional ResourceBundle that can be passed.
+     * 
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) 
@@ -138,7 +171,21 @@ public class ModifyProductFormController implements Initializable
         includedPartsTable.setItems(includedParts);   
         
     }   
+    
+    
+    //================================================================================
+    // Methods
+    //================================================================================
 
+     /**
+     * 
+     * Handles the button to cancel modifying the {@link felixcaban.models.Product Product} in inventory. 
+     * Returns the user to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * 
+     * @param event on action.
+     * @throws IOException thrown if the user can not be returned to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * 
+     */
     @FXML
     private void handleBtnCancelAction(ActionEvent event) throws IOException 
     {
@@ -147,6 +194,15 @@ public class ModifyProductFormController implements Initializable
         
     }
 
+    /**
+     * 
+     * Handles the button to add the selected {@link felixcaban.models.Part Part} to the product. 
+     * If no {@link felixcaban.models.Part Part} is selected, a message dialog will prompt the user
+     * to select a part.
+     * 
+     * @param event on action.
+     * 
+     */
     @FXML
     private void handleBtnAddPartAction(ActionEvent event) 
     {
@@ -172,6 +228,15 @@ public class ModifyProductFormController implements Initializable
         
     }
 
+   /**
+     * 
+     * Handles the button to remove the selected {@link felixcaban.models.Part Part} from the product. 
+     * If no {@link felixcaban.models.Part Part} is selected, a message dialog will prompt the user
+     * to select a part.
+     * 
+     * @param event on action.
+     * 
+     */
     @FXML
     private void handleBtnRemovePartAction(ActionEvent event) 
     {
@@ -179,7 +244,7 @@ public class ModifyProductFormController implements Initializable
         if(includedPartsTable.getSelectionModel().getSelectedItem() == null)
         {
 
-            JOptionPane.showMessageDialog(null, "Please select an Part to remove.", "Selection Error", 0);
+            JOptionPane.showMessageDialog(null, "Please select a Part to remove.", "Selection Error", 0);
 
         }   
         else
@@ -199,11 +264,23 @@ public class ModifyProductFormController implements Initializable
         
     }
 
+      /**
+     * 
+     * Handles the button to save the modified {@link felixcaban.models.Product Product} in inventory.  
+     * Also perform validation on user input to ensure that all fields are complete and all data types match.
+     * 
+     * @param event on action.
+     * @throws IOException if the user can not be returned to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * 
+     */
     @FXML
     private void handleBtnSaveAction(ActionEvent event) throws IOException 
     {       
         
-        try
+        inputErrors.clear(); 
+        validateUserInput();     
+        
+        if (inputErrors.isEmpty())
         {
             
             var tempProduct = new Product(
@@ -212,8 +289,8 @@ public class ModifyProductFormController implements Initializable
                     Double.parseDouble(txtPriceCost.getText()),
                     Integer.parseInt(txtInv.getText()),
                     Integer.parseInt(txtMin.getText()),
-                    Integer.parseInt(txtMax.getText())                
-            );        
+                    Integer.parseInt(txtMax.getText())        
+                );
 
             for (Part pa : includedParts)
             {
@@ -221,29 +298,28 @@ public class ModifyProductFormController implements Initializable
             }
 
             Inventory.updateProduct(DataManager.getProductIndexToModify(), tempProduct);
-
             returnToMainForm(event);
+            
         }
-        catch(Exception e)
+        else
         {
-            lstErrorList.setItems(validateUserInput());
+            
+            lstErrorList.setItems(inputErrors);              
+            
         }
-        
-    }
-    
-    private void returnToMainForm(ActionEvent event) throws IOException
-    {
-        
-        Parent mainForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/MainForm.fxml"));
-        Scene mainFormScene = new Scene(mainForm);
-        
-        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        
-        window.setScene(mainFormScene);
-        window.show();  
         
     }
 
+    
+    /**
+     * 
+     * Handles the entered text in the txtPartSearch text box. 
+     * Initiates a search on existing {@link felixcaban.models.Part Parts} in inventory. If
+     * the {@link felixcaban.models.Part Part} exists, it is selected.
+     * 
+     * @param event on key press.
+     * 
+     */
     @FXML
     private void handlePartSearchAction(KeyEvent event) 
     {
@@ -263,9 +339,23 @@ public class ModifyProductFormController implements Initializable
             {
                 
                 int partId = Integer.parseInt(txtPartSearch.getText());
-                Inventory.lookupPart(partId);
-                allPartsTable.scrollTo(Inventory.lookupPart(partId));
-                allPartsTable.getSelectionModel().select(Inventory.lookupPart(partId));
+                
+                if (!DataManager.partExists(partId))
+                {
+                    
+                    allPartsTable.setItems(Inventory.getAllParts());
+                    allPartsTable.getSelectionModel().clearSelection();
+                    allPartsTable.scrollTo(0);
+                    JOptionPane.showMessageDialog(null, "The Part your entered does not exist.", "Search Error", 0);
+                    
+                }
+                else
+                {
+                    
+                    allPartsTable.scrollTo(Inventory.lookupPart(partId));
+                    allPartsTable.getSelectionModel().select(Inventory.lookupPart(partId));
+                    
+                }
 
             }
             else
@@ -275,22 +365,52 @@ public class ModifyProductFormController implements Initializable
                 allPartsTable.setItems(Inventory.lookupPart(partName));
 
             }            
-        }  
+        }      
         
     }
     
-    private ObservableList<String> validateUserInput()
+    /**
+     * 
+     * Returns the user to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * 
+     * @param event on action.
+     * @throws IOException thrown if the user can not be returned to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * 
+     */
+    private void returnToMainForm(ActionEvent event) throws IOException
     {
         
-        ObservableList<String> inputErrors = FXCollections.observableArrayList();      
-       
-       
+        Parent mainForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/MainForm.fxml"));
+        Scene mainFormScene = new Scene(mainForm);
+        
+        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        
+        window.setScene(mainFormScene);
+        window.show();  
+        
+    }
+    
+   /**
+     * 
+     * Validates the UI text box input. 
+     * If errors are found, they are added to the {@link #inputErrors inputError} list.
+     * 
+     */
+    private void validateUserInput()
+    {        
+                
+        int min = 0;
+        int max = 0;
+        int inv = 0;
+                
         if(txtName.getText() == null || txtName.getText().isEmpty())
         {
 
             inputErrors.add("Name is a required field.");
 
         } 
+        
+        
         
         if(txtInv.getText() == null || txtInv.getText().isEmpty())
         {
@@ -304,6 +424,12 @@ public class ModifyProductFormController implements Initializable
             inputErrors.add("Inv must be an integer.");
 
         }
+        else
+        {
+            inv = Integer.parseInt(txtInv.getText());
+        }
+                
+        
         
         if(txtPriceCost.getText() == null || txtPriceCost.getText().isEmpty())
         {
@@ -317,6 +443,8 @@ public class ModifyProductFormController implements Initializable
             inputErrors.add("Price/Cost must be a decimal or integer.");
 
         }
+        
+        
 
         if(txtMax.getText() == null || txtMax.getText().isEmpty())
         {
@@ -330,6 +458,12 @@ public class ModifyProductFormController implements Initializable
             inputErrors.add("Max must be an integer.");
 
         }
+        else
+        {
+            max = Integer.parseInt(txtMax.getText());
+        }
+        
+        
 
         if(txtMin.getText() == null || txtMin.getText().isEmpty())
         {
@@ -341,11 +475,38 @@ public class ModifyProductFormController implements Initializable
         {
 
             inputErrors.add("Min must be an integer.");
-
+            
+        }
+        else
+        {
+            min = Integer.parseInt(txtMin.getText());
         }
         
-        return inputErrors;
         
-    }    
+        if (max < min)
+        {
+            
+            inputErrors.add("Max can not be less than Min.");            
+            
+        }
+        
+        
+        if (inv > max)
+        {
+            
+            inputErrors.add("Inv can not be greater than Max.");            
+            
+        }
+        
+        
+        if (inv < min)
+        {
+            
+            inputErrors.add("Inv can not be less than Min.");            
+            
+        }
+        
+       
+    }
     
 }

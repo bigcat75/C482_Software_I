@@ -26,7 +26,9 @@ import javafx.stage.Stage;
 
 /**
  * 
- * FXML Controller class for AddPartForm.fxml
+ * FXML Controller class for AddPartForm.fxml.
+ * The controller for the UI to add a new {@link felixcaban.models.Part Part} 
+ * to {@link felixcaban.models.Inventory Inventory}.
  *
  * @author felix.caban
  * @version 1.0
@@ -36,6 +38,9 @@ import javafx.stage.Stage;
 public class AddPartFormController implements Initializable 
 {
     
+    //================================================================================
+    // UI Controls
+    //================================================================================
     @FXML
     private RadioButton rbInHouse;
     @FXML
@@ -65,10 +70,28 @@ public class AddPartFormController implements Initializable
     @FXML
     private ListView<String> lstErrorList;
     
+    
+    //================================================================================
+    // Properties
+    //================================================================================
+    
+    /**
+     * 
+     * List of validation errors from the form input.
+     * 
+     */
+    private ObservableList<String> inputErrors = FXCollections.observableArrayList();
+    
+    
+    //================================================================================
+    // Initializer
+    //================================================================================
 
     /**
      * 
-     * Initializes the controller class.
+     * Initializes the controller class. 
+     * Sets the initial UI control properties.
+     * 
      * @param url an optional URL that can be passed.
      * @param rb an optional ResourceBundle that can be passed.
      * 
@@ -83,12 +106,18 @@ public class AddPartFormController implements Initializable
         txtId.setDisable(true);        
         
     }    
+    
+    
+    //================================================================================
+    // Methods
+    //================================================================================
 
     /**
      * 
-     * Handles the radio button for {@link felixcaban.models.InHouse InHouse} parts being added to inventory.
+     * Handles the radio button for {@link felixcaban.models.InHouse InHouse} parts being added to inventory. 
+     * If selected, a {@link felixcaban.models.InHouse InHouse} part will be created.
      * 
-     * @param event the event to handle.
+     * @param event on action.
      * 
      */
     @FXML
@@ -101,9 +130,10 @@ public class AddPartFormController implements Initializable
 
     /**
      * 
-     * Handles the radio button for {@link felixcaban.models.Outsourced Outsourced} parts being added to inventory.
+     * Handles the radio button for {@link felixcaban.models.Outsourced Outsourced} parts being added to inventory. 
+     * If selected, a {@link felixcaban.models.Outsourced Outsourced} part will be created.
      * 
-     * @param event the event to handle.
+     * @param event on action.
      * 
      */
     @FXML
@@ -116,10 +146,11 @@ public class AddPartFormController implements Initializable
     
     /**
      * 
-     * Handles the button to cancel adding the {@link felixcaban.models.Part Part} to inventory.
+     * Handles the button to cancel adding the {@link felixcaban.models.Part Part} to inventory. 
+     * It then returns the user to the {@link felixcaban.controllers.MainFormController MainForm}.
      * 
-     * @param event the event to handle.
-     * @throws IOException 
+     * @param event on action.
+     * @throws IOException if the user can not be returned to the {@link felixcaban.controllers.MainFormController MainForm}.
      * 
      */
     @FXML
@@ -132,23 +163,29 @@ public class AddPartFormController implements Initializable
     
     /**
      * 
-     * Handles the button to save the entered {@link felixcaban.models.Part Part} being added to inventory.
+     * Handles the button to save the entered {@link felixcaban.models.Part Part} being added to inventory.  
+     * Also perform validation on user input to ensure that all fields are complete and all data types match.
      * 
-     * @param event the event to handle.
+     * @param event on action.
+     * @throws IOException if the user can not be returned to the {@link felixcaban.controllers.MainFormController MainForm}.
      * 
      */
     @FXML
-    private void handleBtnSaveAction(ActionEvent event)
+    private void handleBtnSaveAction(ActionEvent event) throws IOException
     {
         
-        try
-        {            
+        inputErrors.clear(); 
+        validateUserInput();        
+        
+        if (inputErrors.isEmpty())
+        {
+            int partId = DataManager.getNextPartId();
             
             if(rbInHouse.isSelected())
             {
 
                 Inventory.addPart(new InHouse(
-                        DataManager.getNextPartId(), 
+                        partId, 
                         txtName.getText(), 
                         Double.parseDouble(txtPriceCost.getText()), 
                         Integer.parseInt(txtInv.getText()), 
@@ -163,7 +200,7 @@ public class AddPartFormController implements Initializable
             {
 
                Inventory.addPart(new Outsourced(
-                       DataManager.getNextPartId(), 
+                       partId, 
                        txtName.getText(), 
                        Double.parseDouble(txtPriceCost.getText()), 
                        Integer.parseInt(txtInv.getText()), 
@@ -174,29 +211,29 @@ public class AddPartFormController implements Initializable
 
             } 
 
+            DataManager.incrementPartId();
             returnToMainForm(event); 
-            
         }
-        catch(Exception e)
-        {                        
-            lstErrorList.setItems(validateUserInput());    
+        else
+        {
+            
+            lstErrorList.setItems(inputErrors);              
+            
         }
             
     }
     
     /**
      * 
-     * Method to return to the {@link felixcaban.controllers.MainFormController MainForm}.
+     * Returns the user to the {@link felixcaban.controllers.MainFormController MainForm}. 
      * 
-     * @param event the event to handle.
-     * @throws IOException 
+     * @param event on action.
+     * @throws IOException thrown if the user can not be returned to the {@link felixcaban.controllers.MainFormController MainForm}.
      * 
      */
     private void returnToMainForm(ActionEvent event) throws IOException
     {
-        
-        DataManager.incrementPartId();
-        
+           
         Parent mainForm = FXMLLoader.load(getClass().getResource("/felixcaban/views/MainForm.fxml"));
         Scene mainFormScene = new Scene(mainForm);
         
@@ -209,16 +246,16 @@ public class AddPartFormController implements Initializable
     
     /**
      * 
-     * Returns a list of validation errors as a result of testing UI text box input.
-     * 
-     * @return a list of validation errors.
+     * Validates the UI text box input. 
+     * If errors are found, they are added to the {@link #inputErrors inputError} list.
      * 
      */
-    private ObservableList<String> validateUserInput()
+    private void validateUserInput()
     {        
-        
-        ObservableList<String> inputErrors = FXCollections.observableArrayList();
-        
+                
+        int min = 0;
+        int max = 0;
+        int inv = 0;
                 
         if(txtName.getText() == null || txtName.getText().isEmpty())
         {
@@ -240,6 +277,12 @@ public class AddPartFormController implements Initializable
 
             inputErrors.add("Inv must be an integer.");
 
+        }
+        else
+        {
+            
+            inv = Integer.parseInt(txtInv.getText());
+            
         }
                 
         
@@ -271,6 +314,12 @@ public class AddPartFormController implements Initializable
             inputErrors.add("Max must be an integer.");
 
         }
+        else
+        {
+            
+            max = Integer.parseInt(txtMax.getText());
+            
+        }
         
         
 
@@ -284,6 +333,12 @@ public class AddPartFormController implements Initializable
         {
 
             inputErrors.add("Min must be an integer.");
+            
+        }
+        else
+        {
+            
+            min = Integer.parseInt(txtMin.getText());
             
         }
         
@@ -322,7 +377,29 @@ public class AddPartFormController implements Initializable
         }  
         
         
-        return inputErrors;
+        if (max < min)
+        {
+            
+            inputErrors.add("Max can not be less than Min.");            
+            
+        }
+        
+        
+        if (inv > max)
+        {
+            
+            inputErrors.add("Inv can not be greater than Max.");            
+            
+        }
+        
+        
+        if (inv < min)
+        {
+            
+            inputErrors.add("Inv can not be less than Min.");            
+            
+        }
+        
        
     }
     
