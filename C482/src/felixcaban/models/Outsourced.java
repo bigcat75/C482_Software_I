@@ -31,7 +31,7 @@ public class Outsourced extends Part
     
      /**
      *
-     * Creates a new instance {@link #Outsourced(int, java.lang.String, double, int, int, int, java.lang.String) Outsourced} instance.
+     * Creates a new {@link #Outsourced(int, java.lang.String, double, int, int, int, java.lang.String) Outsourced} part instance.
      * 
      * @param id the unique id of the outsourced part.
      * @param name the name of the outsourced part.

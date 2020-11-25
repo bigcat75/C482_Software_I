@@ -166,7 +166,7 @@ public final class Inventory
         
         for (Part pa : allParts)
         {
-            if ( pa.getName().startsWith(partName))
+            if ( pa.getName().toLowerCase().contains(partName))
             {
                 results.add(pa);
             }
@@ -191,7 +191,7 @@ public final class Inventory
         
         for (Product pr : allProducts)
         {
-            if ( pr.getName().startsWith(productName))
+            if ( pr.getName().toLowerCase().contains(productName))
             {
                 results.add(pr);
             }

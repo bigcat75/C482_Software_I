@@ -407,7 +407,7 @@ public class MainFormController implements Initializable
             else
             {      
                 
-                String partName = txtPartSearch.getText();
+                String partName = txtPartSearch.getText().toLowerCase();
                 partTable.setItems(Inventory.lookupPart(partName));
 
             }            
@@ -465,7 +465,7 @@ public class MainFormController implements Initializable
             else
             {   
                 
-                String productName = txtProductSearch.getText();
+                String productName = txtProductSearch.getText().toLowerCase();
                 productTable.setItems(Inventory.lookupProduct(productName));
 
             }            

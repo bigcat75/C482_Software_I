@@ -361,7 +361,7 @@ public class ModifyProductFormController implements Initializable
             else
             {      
                 
-                String partName = txtPartSearch.getText();
+                String partName = txtPartSearch.getText().toLowerCase();
                 allPartsTable.setItems(Inventory.lookupPart(partName));
 
             }            
